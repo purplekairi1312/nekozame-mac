@@ -18,6 +18,11 @@ mkdir -p "$SHARE" "$HOME/.local/bin" "$HOME/.config"
 
 command -v brew >/dev/null || { echo "install homebrew first: https://brew.sh" >&2; exit 1; }
 echo "installing what nekozame-mac uses (brew bundle)..."
+# newer homebrew only installs from taps you trust: sketchybar's and emacs-plus's
+for t in felixkratz/formulae d12frosted/emacs-plus; do
+    brew tap -q "$t"
+    brew trust "$t" 2>/dev/null || true  # (older homebrew has no trust: nothing to do)
+done
 brew bundle --file="$HERE/Brewfile"
 
 pink() { gum style --foreground "#ffc0e5" --bold "$*"; }
