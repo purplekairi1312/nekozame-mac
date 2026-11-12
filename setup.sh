@@ -1,0 +1,201 @@
+#!/bin/bash
+# nekozame-mac setup: macOS as close to nekozame os as it gets. run it again any
+# time: what's done stays done, and it updates what it installed.
+#   on for everyone: PaperWM with niri's shortcuts, the bar, the catshark
+#   wallpaper, the nekozame theme, Zen with the privacy extensions, Doom Emacs as
+#   $EDITOR, fastfetch, Tailscale and Moonlight
+#   asked: evil mode or another editor, music production, Helium
+# your own configs are kept: where you have one, nekozame's isn't put in its place.
+# (macOS's bash is 3.2: nothing newer in here)
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")" && pwd)"
+SHARE="$HOME/.local/share/nekozame"
+OS=https://raw.githubusercontent.com/purplekairi1312/nekozame-os/main
+THEME=https://raw.githubusercontent.com/purplekairi1312/nekozame-theme/main/themes
+# renovate: datasource=git-refs depName=https://github.com/mogenson/PaperWM.spoon
+PAPERWM=630411e7f1401fa124cc5fe7cad3ee562e328624
+mkdir -p "$SHARE" "$HOME/.local/bin" "$HOME/.config"
+
+command -v brew >/dev/null || { echo "install homebrew first: https://brew.sh" >&2; exit 1; }
+echo "installing what nekozame-mac uses (brew bundle)..."
+brew bundle --file="$HERE/Brewfile"
+
+pink() { gum style --foreground "#ffc0e5" --bold "$*"; }
+step() { echo; pink "▸ $*"; }
+ask() { gum confirm --default="${2:-true}" "$1"; }
+ok() { echo "  ✓ $*"; }
+# link FILE into place unless something else is there already
+place() {  # place SOURCE TARGET
+    if [ -L "$2" ] || [ ! -e "$2" ]; then mkdir -p "$(dirname "$2")"; ln -sfn "$1" "$2"; ok "${2/#$HOME/~}"
+    else echo "  · ${2/#$HOME/~} is yours, kept"; fi
+}
+fetch() { curl -fsSL -o "$2" "$1"; }  # fetch URL FILE
+
+gum style --border rounded --border-foreground "#ffc0e5" --padding "0 2" \
+    "nekozame-mac 🦈" "" "the defaults are already picked: press enter to keep them."
+
+step "Windows: PaperWM with niri's shortcuts (Option is niri's Mod)"
+if [ -d "$HOME/.hammerspoon/Spoons/PaperWM.spoon/.git" ]; then
+    git -C "$HOME/.hammerspoon/Spoons/PaperWM.spoon" fetch -q origin
+else
+    git clone -q https://github.com/mogenson/PaperWM.spoon "$HOME/.hammerspoon/Spoons/PaperWM.spoon"
+fi
+git -C "$HOME/.hammerspoon/Spoons/PaperWM.spoon" checkout -q "$PAPERWM"
+if [ ! -e "$HOME/.hammerspoon/init.lua" ]; then
+    # yours to add to: nekozame's part is loaded from here
+    printf -- '-- nekozame-mac: PaperWM and niri'"'"'s shortcuts. add your own below.\ndofile("%s/hammerspoon/init.lua")\n' "$HERE" \
+        > "$HOME/.hammerspoon/init.lua"
+    ok "~/.hammerspoon/init.lua"
+else
+    grep -q "nekozame-mac" "$HOME/.hammerspoon/init.lua" && ok "~/.hammerspoon/init.lua" \
+        || echo "  · ~/.hammerspoon/init.lua is yours: add  dofile(\"$HERE/hammerspoon/init.lua\")  to it"
+fi
+defaults write org.hammerspoon.Hammerspoon MJShowMenuIconKey -bool false
+open -g -a Hammerspoon
+echo "  Hammerspoon needs Accessibility: System Settings → Privacy & Security → Accessibility"
+
+step "The bar (SketchyBar), with the macOS menu bar hidden"
+place "$HERE/sketchybar" "$HOME/.config/sketchybar"
+osascript -e 'tell application "System Events" to set autohide menu bar of dock preferences to true' >/dev/null
+brew services restart sketchybar >/dev/null && ok "running"
+
+step "The catshark wallpaper"
+swiftc -O -suppress-warnings -o "$HOME/.local/bin/nekozame-wallpaper" "$HERE/wallpaper/main.swift"
+# the loop closest to the main screen's shape, in a format macOS plays: prores
+# 4444 keeps every pixel of the pixel art
+read -r W H < <(osascript -l JavaScript -e 'ObjC.import("AppKit"); var f = $.NSScreen.mainScreen.frame; var s = $.NSScreen.mainScreen.backingScaleFactor; (f.size.width*s) + " " + (f.size.height*s)')
+best=$(python3 -c "
+r = $W / $H
+a = {'21x9': 21/9, '32x9': 32/9, '16x9': 16/9, '16x10': 16/10, '3x2': 3/2, '4x3': 4/3, '5x4': 5/4}
+print(min(a, key=lambda k: abs(a[k] - r)))")
+VARIANT=$(gum choose --header "Wallpaper:" --selected=small small big none)
+tmp=$(mktemp -d)
+fetch "$OS/system_files/usr/share/backgrounds/nekozame/$VARIANT-$best.mkv" "$tmp/loop.mkv"
+ffmpeg -v error -y -i "$tmp/loop.mkv" -c:v prores_ks -profile:v 4444 -pix_fmt yuv444p10le -vendor apl0 "$SHARE/wallpaper.mov"
+rm -rf "$tmp"
+AGENT="$HOME/Library/LaunchAgents/com.nekozame.wallpaper.plist"
+cat > "$AGENT" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.nekozame.wallpaper</string>
+  <key>ProgramArguments</key><array><string>$HOME/.local/bin/nekozame-wallpaper</string><string>$SHARE/wallpaper.mov</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+</dict></plist>
+PLIST
+launchctl bootout "gui/$(id -u)/com.nekozame.wallpaper" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "$AGENT" && ok "$VARIANT, $best (a ${W%.*}x${H%.*} screen)"
+
+step "The nekozame theme"
+mkdir -p "$SHARE/theme"
+fetch "$THEME/ghostty/nekozame" "$SHARE/theme/ghostty"
+fetch "$THEME/cava/config" "$SHARE/theme/cava"
+fetch "$THEME/emacs/nekozame-theme.el" "$SHARE/theme/nekozame-theme.el"
+fetch "$THEME/btop/nekozame.theme" "$SHARE/theme/btop.theme"
+place "$SHARE/theme/ghostty" "$HOME/.config/ghostty/themes/nekozame"
+[ -e "$HOME/.config/ghostty/config" ] || printf 'theme = nekozame\nfont-family = Hack Nerd Font\n' > "$HOME/.config/ghostty/config"
+place "$SHARE/theme/cava" "$HOME/.config/cava/config"
+place "$SHARE/theme/btop.theme" "$HOME/.config/btop/themes/nekozame.theme"
+
+step "fastfetch, with the bubble logo"
+mkdir -p "$SHARE/fastfetch"
+fetch "$OS/system_files/usr/share/nekozame-os/fastfetch/logo.png" "$SHARE/fastfetch/logo.png"
+fetch "$OS/system_files/usr/share/nekozame-os/fastfetch/logo-color.txt" "$SHARE/fastfetch/logo-color.txt"
+sed "s|@SHARE@|$SHARE|g" "$HERE/fastfetch/config.jsonc" > "$SHARE/fastfetch/config.jsonc"
+place "$SHARE/fastfetch/config.jsonc" "$HOME/.config/fastfetch/config.jsonc"
+
+step "Zen, ready for privacy"
+# the same settings as nekozame os, as zen's macOS preferences (it reads its
+# policies from there). merged in: zen's other preferences stay
+pol=$(mktemp)
+fetch "$OS/system_files/usr/share/nekozame-os/zen/policies/policies.json" "$pol"
+defaults export app.zen-browser.zen "$pol.old" 2>/dev/null || rm -f "$pol.old"
+python3 - "$pol" <<'PY'
+import json, os, plistlib, sys
+p = sys.argv[1]
+prefs = plistlib.load(open(p + ".old", "rb")) if os.path.exists(p + ".old") else {}
+prefs.update(json.load(open(p))["policies"])
+prefs["EnterprisePoliciesEnabled"] = True
+plistlib.dump(prefs, open(p + ".plist", "wb"))
+PY
+defaults import app.zen-browser.zen "$pol.plist" && rm -f "$pol" "$pol.old" "$pol.plist"
+ok "dark reader, ublock origin, privacy badger, libredirect, clearurls, consent-o-matic, duckduckgo, https-only"
+
+step "Editor: Doom Emacs"
+mkdir -p "$HOME/.config/nekozame"
+if [ -x "$HOME/.config/emacs/bin/doom" ]; then
+    ok "doom emacs"
+elif [ -s "$HOME/.config/nekozame/editor" ]; then
+    ok "$(cat "$HOME/.config/nekozame/editor")"
+else
+    DOOM="Doom Emacs (emacs keys)"; EVIL="Doom Emacs with evil mode (vim keys)"; OWN="Another editor"
+    choice=$(gum choose --header "Your editor (\$EDITOR):" --selected="$DOOM" "$DOOM" "$EVIL" "$OWN")
+    case "$choice" in
+        "$OWN")
+            pick=$(gum choose --header "Which one?" neovim helix micro nano "something else")
+            case "$pick" in
+                neovim) brew install neovim; echo nvim > "$HOME/.config/nekozame/editor" ;;
+                helix) brew install helix; echo hx > "$HOME/.config/nekozame/editor" ;;
+                micro) brew install micro; echo micro > "$HOME/.config/nekozame/editor" ;;
+                nano) echo nano > "$HOME/.config/nekozame/editor" ;;
+                *) gum input --placeholder "the command" > "$HOME/.config/nekozame/editor" ;;
+            esac ;;
+        *)
+            if [ "$choice" = "$EVIL" ]; then evil=on; else evil=off; fi
+            fresh=""; [ -e "$HOME/.config/doom" ] || fresh=1
+            git clone -q --depth 1 https://github.com/doomemacs/doomemacs "$HOME/.config/emacs"
+            "$HOME/.config/emacs/bin/doom" install --force
+            if [ -n "$fresh" ]; then
+                sed -i '' "s|^(setq doom-theme 'doom-one)|(add-to-list 'custom-theme-load-path \"$SHARE/theme/\")\\
+(setq doom-theme 'nekozame)|" "$HOME/.config/doom/config.el"
+                [ "$evil" = on ] || sed -i '' 's/^\( *\)(evil +everywhere)/\1;;(evil +everywhere)/' "$HOME/.config/doom/init.el"
+                "$HOME/.config/emacs/bin/doom" sync
+            fi
+            ok "doom emacs (evil $evil)" ;;
+    esac
+fi
+# the emacs daemon, always running, so emacsclient opens instantly
+if [ ! -s "$HOME/.config/nekozame/editor" ] && ! launchctl list | grep -q -E 'emacs'; then
+    cat > "$HOME/Library/LaunchAgents/com.nekozame.emacs.plist" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.nekozame.emacs</string>
+  <key>ProgramArguments</key><array><string>/Applications/Emacs.app/Contents/MacOS/Emacs</string><string>--fg-daemon</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+</dict></plist>
+PLIST
+    launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.nekozame.emacs.plist"
+fi
+cp "$HERE/shell/nekozame.zsh" "$HOME/.config/nekozame/nekozame.zsh"
+if ! grep -q "nekozame/nekozame.zsh" "$HOME/.zshrc" 2>/dev/null; then
+    echo '[ -f ~/.config/nekozame/nekozame.zsh ] && source ~/.config/nekozame/nekozame.zsh' >> "$HOME/.zshrc"
+fi
+ok "\$EDITOR, fastfetch and cava set up in zsh"
+
+step "Tailscale and Moonlight"
+ok "installed (open Tailscale to log in)"
+
+step "Music production"
+if ask "Set up music production? (DAWs and free plugins)" false; then
+    gum choose --no-limit --header "Pick (space), then enter:" \
+        "bitwig-studio (proprietary · paid)" "reaper (proprietary · paid · free evaluation)" \
+        "lmms (free software)" "surge-xt (free software synth)" "dexed (free software FM synth)" \
+        "cardinal (free software modular)" "vcv-rack (free software modular)" \
+        "iem-plugin-suite (free software spatial audio)" "blackhole-2ch (free software: route audio between apps)" \
+        | while read -r p; do brew install --cask "${p%% *}" || true; done
+fi
+
+step "Helium (a second browser, optional)"
+if ask "Install Helium? It gets the same extensions and settings as Zen" false; then
+    brew install --cask helium-browser
+    # chromium on macOS only takes forced settings from a profile you approve
+    python3 "$HERE/helium/profile.py" "$OS/system_files/etc/chromium/policies/managed/nekozame.json" "$SHARE/nekozame-helium.mobileconfig"
+    open "$SHARE/nekozame-helium.mobileconfig"
+    echo "  approve it in System Settings → General → Device Management (Profiles)"
+fi
+
+echo; pink "all set <3"
+echo "  Option+Shift+/ shows the shortcuts. log out and back in once for everything."
