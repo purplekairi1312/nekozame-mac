@@ -76,6 +76,10 @@ place "$HERE/sketchybar" "$HOME/.config/sketchybar"
 osascript -e 'tell application "System Events" to set autohide menu bar of dock preferences to false' >/dev/null
 brew services restart sketchybar >/dev/null && ok "running"
 
+step "cava on the bar"
+"$HERE/cava/install.sh"
+ok "it reads a copy of what's playing: your audio isn't changed. allow it once when macOS asks"
+
 step "The catshark wallpaper"
 swiftc -O -suppress-warnings -o "$HOME/.local/bin/nekozame-wallpaper" "$HERE/wallpaper/main.swift"
 # the loop closest to the main screen's shape, in a format macOS plays: prores

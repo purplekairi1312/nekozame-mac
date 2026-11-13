@@ -55,6 +55,11 @@ sketchybar --add item clock right \
            --set media icon=󰎈 icon.color=$PINK label.max_chars=40 scroll_texts=on update_freq=3 \
                  script="$P/media.sh" click_script="media-control toggle-play-pause"
 
+# cava's bars, next to what's playing (nekozame-cava fills them in; hidden in silence)
+sketchybar --add item cava right \
+           --set cava drawing=off icon.drawing=off background.drawing=off \
+                 label.font="Hack Nerd Font:Bold:12.0" label.color=$PINK label.padding_left=2
+
 # the macOS menu bar's icons, left of what's playing
 "$P/tray.sh"
 
