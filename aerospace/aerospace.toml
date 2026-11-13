@@ -1,0 +1,105 @@
+# nekozame-mac: AeroSpace, with the nekozame os shortcuts. i3-style tiling with its
+# own workspaces (it doesn't need macOS Spaces, which hammerspoon can't read on
+# macOS 27, so PaperWM waits: hammerspoon/paperwm.lua).
+#   Ctrl+Option   windows (Ctrl+Alt in nekozame os)
+#   Option+1-9    workspaces (Alt+1-9 in nekozame os)
+#   Cmd           apps: macOS's own, plus hammerspoon's Cmd+Return / E / B
+config-version = 2
+start-at-login = true
+after-startup-command = []
+# tell the bar which workspace is showing
+exec-on-workspace-change = ['/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE']
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+accordion-padding = 30
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+automatically-unhide-macos-hidden-apps = true
+
+[key-mapping]
+preset = 'qwerty'
+
+# the bar is 46px. the main screen's macOS menu bar (30px, under the bar) already
+# keeps windows clear of 30 of it; other screens have no menu bar
+[gaps]
+inner.horizontal = 10
+inner.vertical = 10
+outer.left = 10
+outer.right = 10
+outer.bottom = 10
+outer.top = [{ monitor.main = 26 }, 56]
+
+[mode.main.binding]
+# focus and move (Shift)
+ctrl-alt-left = 'focus left'
+ctrl-alt-right = 'focus right'
+ctrl-alt-up = 'focus up'
+ctrl-alt-down = 'focus down'
+ctrl-alt-shift-left = 'move left'
+ctrl-alt-shift-right = 'move right'
+ctrl-alt-shift-up = 'move up'
+ctrl-alt-shift-down = 'move down'
+# maximize / fullscreen
+ctrl-alt-enter = 'fullscreen'
+ctrl-alt-shift-enter = 'macos-native-fullscreen'
+# sizes
+ctrl-alt-minus = 'resize smart -60'
+ctrl-alt-equal = 'resize smart +60'
+ctrl-alt-r = 'balance-sizes'
+# into a neighbour's column / back out (niri: consume / expel)
+ctrl-alt-leftSquareBracket = 'join-with left'
+ctrl-alt-rightSquareBracket = 'join-with right'
+# stacked like tabs, or side by side; floating
+ctrl-alt-w = 'layout accordion tiles'
+ctrl-alt-space = 'layout floating tiling'
+ctrl-alt-c = 'layout horizontal vertical'
+# workspaces
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+alt-shift-1 = 'move-node-to-workspace 1'
+alt-shift-2 = 'move-node-to-workspace 2'
+alt-shift-3 = 'move-node-to-workspace 3'
+alt-shift-4 = 'move-node-to-workspace 4'
+alt-shift-5 = 'move-node-to-workspace 5'
+alt-shift-6 = 'move-node-to-workspace 6'
+alt-shift-7 = 'move-node-to-workspace 7'
+alt-shift-8 = 'move-node-to-workspace 8'
+alt-shift-9 = 'move-node-to-workspace 9'
+ctrl-alt-pageDown = 'workspace next'
+ctrl-alt-pageUp = 'workspace prev'
+ctrl-alt-shift-pageDown = 'move-node-to-workspace next'
+ctrl-alt-shift-pageUp = 'move-node-to-workspace prev'
+# monitors
+ctrl-alt-cmd-left = 'focus-monitor left'
+ctrl-alt-cmd-right = 'focus-monitor right'
+ctrl-alt-cmd-up = 'focus-monitor up'
+ctrl-alt-cmd-down = 'focus-monitor down'
+ctrl-alt-cmd-shift-left = 'move-node-to-monitor left'
+ctrl-alt-cmd-shift-right = 'move-node-to-monitor right'
+ctrl-alt-cmd-shift-up = 'move-node-to-monitor up'
+ctrl-alt-cmd-shift-down = 'move-node-to-monitor down'
+
+# not windows to tile: menu bar apps, settings, popups
+[[on-window-detected]]
+if.app-id = 'io.tailscale.ipn.macsys'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'org.hammerspoon.Hammerspoon'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'app.zen-browser.zen'
+if.window-title-regex-substring = '^Extension:'
+run = 'layout floating'

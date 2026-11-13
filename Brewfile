@@ -1,6 +1,7 @@
 # nekozame-mac: what setup installs (brew bundle)
 tap "FelixKratz/formulae"
 tap "d12frosted/emacs-plus"
+tap "nikitabobko/tap"
 
 brew "gum"             # setup's menus
 brew "fastfetch"
@@ -12,7 +13,8 @@ brew "fd"
 brew "FelixKratz/formulae/sketchybar"
 brew "media-control"   # what's playing, for the bar
 
-cask "hammerspoon"     # runs PaperWM and the shortcuts
+cask "nikitabobko/tap/aerospace"  # the windows
+cask "hammerspoon"     # the app shortcuts (and PaperWM, later)
 cask "ghostty"
 cask "zen"
 cask "d12frosted/emacs-plus/emacs-plus-app"
