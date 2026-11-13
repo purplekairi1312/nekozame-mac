@@ -64,7 +64,7 @@ sketchybar --add item cava right \
 "$P/tray.sh"
 
 # the rounded bar: one pill behind everything
-sketchybar --add bracket pill '/space\..*/' front_app media volume clock \
+sketchybar --add bracket pill '/space\..*/' front_app cava media volume clock \
            --set pill background.color=$BG background.corner_radius=12 background.height=34 \
                       background.border_width=2 background.border_color=$PANEL
 
