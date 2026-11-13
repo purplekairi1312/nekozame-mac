@@ -61,10 +61,9 @@ defaults write org.hammerspoon.Hammerspoon MJShowMenuIconKey -bool false
 open -g -a Hammerspoon
 echo "  Hammerspoon needs Accessibility: System Settings → Privacy & Security → Accessibility"
 
-step "The bar (SketchyBar), over the macOS menu bar"
+step "The bar (SketchyBar), with the macOS menu bar hidden under it"
 place "$HERE/sketchybar" "$HOME/.config/sketchybar"
-# the menu bar stays shown (hidden, it pops out at the top edge) and the bar covers it
-osascript -e 'tell application "System Events" to set autohide menu bar of dock preferences to false' >/dev/null
+osascript -e 'tell application "System Events" to set autohide menu bar of dock preferences to true' >/dev/null
 brew services restart sketchybar >/dev/null && ok "running"
 
 step "The catshark wallpaper"
