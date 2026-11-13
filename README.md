@@ -8,6 +8,7 @@ nekozame for macOS.
 - The animated catshark wallpaper, sharp on any screen shape, with the nekozame logo small, big or not at all <3
 - The [nekozame theme](https://git.sr.ht/~purplekairi1312/nekozame-theme) in Ghostty (see-through), Emacs (with the nekozame logo on Doom's dashboard), cava and btop, and fastfetch with the bubble logo
 - Zen, ready for privacy: Dark Reader, uBlock Origin, Privacy Badger, LibRedirect, ClearURLs, Consent-O-Matic and [nekojs](https://git.sr.ht/~purplekairi1312/nekojs), DuckDuckGo, HTTPS-only, no telemetry, no WebRTC leaks (Helium optional, with the same). Zen in nekozame too: see-through toolbars, and pages, GitHub and YouTube in nekozame colours
+- The nekozame theme in Discord (through Vencord) and Bitwig (through the Bitwig Theme Editor), when you have them. Run the setup again after they update
 - Doom Emacs as `$EDITOR`, always running as a daemon (evil mode or another editor if you want)
 - Tailscale and Moonlight
 - Music production on request: Bitwig, Reaper, LMMS and free plugins
