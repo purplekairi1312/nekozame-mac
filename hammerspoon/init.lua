@@ -121,7 +121,8 @@ bind(WIN, "delete", function() power:show() end)
 -- the app still gets every click; this only looks around once a drag starts
 local T = hs.eventtap.event.types
 local drag = nil  -- { start = point, win = window, floated = bool }
-local dragTap = hs.eventtap.new({ T.leftMouseDown, T.leftMouseDragged, T.leftMouseUp }, function(e)
+-- (global: a local one gets garbage-collected and stops)
+nekozameDragTap = hs.eventtap.new({ T.leftMouseDown, T.leftMouseDragged, T.leftMouseUp }, function(e)
     local t = e:getType()
     if t == T.leftMouseDown then
         drag = { start = e:location() }
@@ -151,7 +152,7 @@ local dragTap = hs.eventtap.new({ T.leftMouseDown, T.leftMouseDragged, T.leftMou
     end
     return false
 end)
-dragTap:start()
+nekozameDragTap:start()
 
 -- the focused app's menus (File, Edit...), from the bar: click its name there
 function nekozameAppMenu()
