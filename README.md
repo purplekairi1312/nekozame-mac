@@ -4,6 +4,8 @@ nekozame for macOS.
 
 ![nekozame-mac: the bar, Zen with SourceHut, Doom Emacs, and Ghostty with fastfetch and btop, over the catshark wallpaper](assets/showcase.png)
 
+![the animated catshark wallpaper](assets/wallpaper.gif)
+
 - [AeroSpace](https://github.com/nikitabobko/AeroSpace) tiling: Ctrl+Option+arrows to focus, Shift to move, Option+1-9 for workspaces
 - Cmd for apps: Cmd+Return terminal, Cmd+E files, Cmd+Shift+E yazi, Cmd+B browser, on top of macOS's own. Cmd+Shift+/ shows every shortcut
 - A rounded [SketchyBar](https://github.com/FelixKratz/SketchyBar) bar: workspaces, the app's menus (click its name), what's playing, volume and the clock
