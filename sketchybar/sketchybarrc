@@ -60,11 +60,15 @@ sketchybar --add item cava right \
            --set cava drawing=off icon.drawing=off background.drawing=off \
                  label.font="Hack Nerd Font:Bold:12.0" label.color=$PINK label.padding_left=2
 
-# the macOS menu bar's icons, left of what's playing
+# the macOS menu bar's icons: mirrored in when SketchyBar can (not on macOS 27 yet),
+# and a button that shows the real menu bar for a moment
 "$P/tray.sh"
+sketchybar --add item tray right \
+           --set tray icon=󰅃 icon.color=$PINK label.drawing=off background.drawing=off \
+                 click_script="$P/tray_toggle.sh"
 
 # the rounded bar: one pill behind everything
-sketchybar --add bracket pill '/space\..*/' front_app cava media volume clock \
+sketchybar --add bracket pill '/space\..*/' front_app cava media tray volume clock \
            --set pill background.color=$BG background.corner_radius=12 background.height=34 \
                       background.border_width=2 background.border_color=$PANEL
 
