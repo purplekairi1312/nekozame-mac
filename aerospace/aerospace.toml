@@ -105,3 +105,11 @@ run = 'layout floating'
 if.app-id = 'app.zen-browser.zen'
 if.window-title-regex-substring = '^Extension:'
 run = 'layout floating'
+# file pickers, save/export/print dialogs and picture-in-picture videos, in any app:
+# tiled, they'd squeeze the window next to them to one side
+[[on-window-detected]]
+if.window-title-regex-substring = '^(Open|Save|Save As|Export|Export As|Print|Import|Choose .*|Open File|Select .*)$'
+run = 'layout floating'
+[[on-window-detected]]
+if.window-title-regex-substring = 'Picture-in-Picture'
+run = 'layout floating'
