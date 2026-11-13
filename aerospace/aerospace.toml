@@ -50,7 +50,7 @@ ctrl-alt-minus = 'resize smart -60'
 ctrl-alt-equal = 'resize smart +60'
 ctrl-alt-r = 'balance-sizes'
 # if the layout gets messy: back to a clean row of even windows
-ctrl-alt-shift-r = ['flatten-workspace-tree', 'layout tiles horizontal', 'balance-sizes']
+cmd-shift-r = ['flatten-workspace-tree', 'layout tiles horizontal', 'balance-sizes']
 # into a neighbour's column
 ctrl-alt-leftSquareBracket = 'join-with left'
 ctrl-alt-rightSquareBracket = 'join-with right'
