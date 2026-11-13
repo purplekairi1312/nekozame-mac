@@ -29,9 +29,12 @@ pink() { gum style --foreground "#ffc0e5" --bold "$*"; }
 step() { echo; pink "▸ $*"; }
 ask() { gum confirm --default="${2:-true}" "$1"; }
 ok() { echo "  ✓ $*"; }
-# link FILE into place unless something else is there already
+# link FILE into place unless something else is there already: a file, or a
+# link of your own (dotfiles), stays. only links nekozame made are replaced
 place() {  # place SOURCE TARGET
-    if [ -L "$2" ] || [ ! -e "$2" ]; then mkdir -p "$(dirname "$2")"; ln -sfn "$1" "$2"; ok "${2/#$HOME/~}"
+    local now; now=$(readlink "$2" 2>/dev/null || true)
+    if [ ! -e "$2" ] && [ ! -L "$2" ] || [[ "$now" == "$SHARE"* || "$now" == "$HERE"* ]]; then
+        mkdir -p "$(dirname "$2")"; ln -sfn "$1" "$2"; ok "${2/#$HOME/~}"
     else echo "  · ${2/#$HOME/~} is yours, kept"; fi
 }
 fetch() { curl -fsSL -o "$2" "$1"; }  # fetch URL FILE
@@ -116,6 +119,12 @@ fetch "$THEME/ghostty/nekozame" "$SHARE/theme/ghostty"
 fetch "$THEME/cava/config" "$SHARE/theme/cava"
 fetch "$THEME/emacs/nekozame-theme.el" "$SHARE/theme/nekozame-theme.el"
 fetch "$THEME/btop/nekozame.theme" "$SHARE/theme/btop.theme"
+fetch "$OS/system_files/usr/share/nekozame-os/emacs/banner.png" "$SHARE/theme/banner.png"
+mkdir -p "$SHARE/theme/zen" "$SHARE/theme/web"
+fetch "$THEME/zen/userChrome.css" "$SHARE/theme/zen/userChrome.css"
+fetch "$THEME/zen/userContent.css" "$SHARE/theme/zen/userContent.css"
+fetch "$THEME/darkreader/nekozame.json" "$SHARE/theme/web/nekozame-darkreader.json"
+fetch "$THEME/improvedtube/nekozame.json" "$SHARE/theme/web/nekozame-improvedtube.json"
 place "$SHARE/theme/ghostty" "$HOME/.config/ghostty/themes/nekozame"
 # cmd+t: a new window instead of a tab (windows tile; macOS's native tabs don't)
 [ -e "$HOME/.config/ghostty/config" ] || printf 'theme = nekozame\nfont-family = Hack Nerd Font\nkeybind = cmd+t=new_window\n' > "$HOME/.config/ghostty/config"
@@ -145,6 +154,25 @@ plistlib.dump(prefs, open(p + ".plist", "wb"))
 PY
 defaults import app.zen-browser.zen "$pol.plist" && rm -f "$pol" "$pol.old" "$pol.plist"
 ok "dark reader, ublock origin, privacy badger, libredirect, clearurls, consent-o-matic, duckduckgo, https-only"
+# the nekozame look: see-through toolbars, and pages in nekozame (with dark
+# reader; github and youtube in their own colours). zen makes its profile on
+# its first start: run this again after that if there's none yet
+found=""
+for prof in "$HOME/Library/Application Support/zen/Profiles"/*/; do
+    [ -f "$prof/prefs.js" ] || continue
+    found=1
+    place "$SHARE/theme/zen/userChrome.css" "$prof/chrome/userChrome.css"
+    place "$SHARE/theme/zen/userContent.css" "$prof/chrome/userContent.css"
+    for pref in toolkit.legacyUserProfileCustomizations.stylesheets browser.tabs.allow_transparent_browser; do
+        grep -qs "\"$pref\"" "$prof/user.js" || echo "user_pref(\"$pref\", true);" >> "$prof/user.js"
+    done
+done
+[ -n "$found" ] || echo "  · open Zen once, then run this again for the nekozame look"
+# dark reader and improvedtube only take their settings from an import
+cp "$SHARE/theme/web/"*.json "$HOME/Downloads/"
+echo "  in Zen, import from ~/Downloads (just once):"
+echo "    Dark Reader: Settings → Advanced → Import Settings → nekozame-darkreader.json"
+echo "    ImprovedTube (YouTube): Settings → Backup & Reset → Import settings → nekozame-improvedtube.json"
 
 step "Editor: Doom Emacs"
 mkdir -p "$HOME/.config/nekozame"
@@ -172,7 +200,8 @@ else
             "$HOME/.config/emacs/bin/doom" install --force
             if [ -n "$fresh" ]; then
                 sed -i '' "s|^(setq doom-theme 'doom-one)|(add-to-list 'custom-theme-load-path \"$SHARE/theme/\")\\
-(setq doom-theme 'nekozame)|" "$HOME/.config/doom/config.el"
+(setq doom-theme 'nekozame)\\
+(setq fancy-splash-image \"$SHARE/theme/banner.png\")|" "$HOME/.config/doom/config.el"
                 [ "$evil" = on ] || sed -i '' 's/^\( *\)(evil +everywhere)/\1;;(evil +everywhere)/' "$HOME/.config/doom/init.el"
                 "$HOME/.config/emacs/bin/doom" sync
             fi
