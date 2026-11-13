@@ -42,8 +42,8 @@ for i = 1, 9 do
 end
 spoon.PaperWM:bindHotkeys(binds)
 spoon.PaperWM.window_gap = 10
--- room for the bar: 34px tall, 6px down from the very top of the screen
-spoon.PaperWM.external_bar = { top = 40 }
+-- room for the bar (46px, over the macOS menu bar)
+spoon.PaperWM.external_bar = { top = 46 }
 -- the mouse: Ctrl+Cmd+drag picks a window up and drops it in a new spot (niri's
 -- Super+drag); Ctrl+Option+drag slides the whole row. Cmd+click stays the apps'
 spoon.PaperWM.lift_window = { "ctrl", "cmd" }
