@@ -90,20 +90,18 @@ apps: Cmd (Super in nekozame os)
 
 windows: Ctrl+Option (Ctrl+Alt in nekozame os)
   arrows              focus         + Shift     move
-  Return              maximize      + Shift     fullscreen
+  Return              fullscreen in place (+ Shift: macOS fullscreen)
   - / =               narrower / wider      R  even sizes
-  [ / ]               into / out of a neighbour's column
-  W                   stack         Space       float
+  [ / ]               join the window left / right
+  W                   stack like tabs       Space  float
   C                   side by side / on top of each other
-  Option+1-9          space         + Shift     move to space
-  Page Up / Down      prev / next space
-  + Cmd + arrows      other monitor
-  O                   overview      Delete      power menu
+  Page Up / Down      prev / next workspace
+  + Cmd + arrows      other monitor (+ Shift: take the window)
+  Delete              power menu
 
-mouse
-  Ctrl+Cmd+drag       move a window (Super+drag in nekozame os)
-  Ctrl+Option+drag    slide the row (or Ctrl+Option+scroll)
-  title bar drag      drop the window in a new spot
+workspaces: Option+1-9 (Alt+1-9 in nekozame os), + Shift takes the window
+
+mouse: drag a window's edge to resize, its neighbours follow
 ]]
 bind({ "cmd", "shift" }, "/", function() hs.alert.show(help, { textFont = "Hack Nerd Font Mono", textSize = 15,
     fillColor = { hex = "#5a4f6e", alpha = 0.97 }, strokeColor = { hex = "#ffc0e5" }, textColor = { hex = "#ffffff" } }, 10) end)
