@@ -6,7 +6,7 @@ nekozame for macOS.
 
 ![the animated catshark wallpaper](assets/wallpaper.gif)
 
-- [AeroSpace](https://github.com/nikitabobko/AeroSpace) tiling: Ctrl+Option+arrows to focus, Shift to move, Option+1-9 for workspaces
+- [AeroSpace](https://github.com/nikitabobko/AeroSpace) tiling: Ctrl+Option+arrows to focus, Shift to move, left Option+1-9 for workspaces (the right Option still types @, # and the rest on any keyboard layout)
 - Cmd for apps: Cmd+Return terminal, Cmd+E files, Cmd+Shift+E yazi, Cmd+B browser, on top of macOS's own. Cmd+Shift+/ shows every shortcut
 - A rounded [SketchyBar](https://github.com/FelixKratz/SketchyBar) bar: workspaces, the app's menus (click its name), what's playing, volume and the clock
 - The animated catshark wallpaper, sharp on any screen shape, with the nekozame logo small, big or not at all <3

@@ -21,6 +21,28 @@ local function run(cmd, args) hs.task.new(cmd, nil, args or {}):start() end
 
 if WM == "paperwm" then dofile(HERE .. "paperwm.lua") end
 
+-- === workspaces (left Option + 1-9) ===
+-- only the left Option: the right one stays free for typing, where Option+number
+-- makes characters (@ # | on a Spanish keyboard, € on a British one...). aerospace
+-- can't tell the two apart, so this lives here. the number keys go by position,
+-- so it's the same on any layout
+if WM == "aerospace" then
+    local AEROSPACE = "/opt/homebrew/bin/aerospace"
+    local NUM = { [18] = 1, [19] = 2, [20] = 3, [21] = 4, [23] = 5, [22] = 6, [26] = 7, [28] = 8, [25] = 9 }
+    local LALT, RALT = 0x20, 0x40  -- which Option is down (NX_DEVICELALTKEYMASK, ...RALTKEYMASK)
+    -- global, so it isn't garbage collected
+    nekozameWorkspaces = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
+        local n = NUM[e:getKeyCode()]
+        if not n then return false end
+        local fl = e:getFlags()
+        if not fl.alt or fl.cmd or fl.ctrl or fl.fn then return false end
+        local raw = e:rawFlags()
+        if raw & LALT == 0 or raw & RALT ~= 0 then return false end
+        run(AEROSPACE, { fl.shift and "move-node-to-workspace" or "workspace", tostring(n) })
+        return true
+    end):start()
+end
+
 -- === apps (Cmd) ===
 local GHOSTTY = "com.mitchellh.ghostty"
 local function terminal()
@@ -99,7 +121,7 @@ windows: Ctrl+Option
   + Cmd + arrows      other monitor (+ Shift: take the window)
   Delete              power menu
 
-workspaces: Option+1-9, + Shift takes the window
+workspaces: left Option+1-9, + Shift takes the window (right Option types)
 
 mouse: drag an edge to resize (neighbours follow); drag a window, or Ctrl+Cmd+drag it
   from anywhere, and drop it on another to take its place
