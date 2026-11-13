@@ -100,7 +100,8 @@ windows: Ctrl+Option
 
 workspaces: Option+1-9, + Shift takes the window
 
-mouse: drag a window's edge to resize, its neighbours follow
+mouse: drag an edge to resize (neighbours follow); drag a window, or Ctrl+Cmd+drag it
+  from anywhere, and drop it on another to take its place
 ]]
 bind({ "cmd", "shift" }, "/", function() hs.alert.show(help, { textFont = "Hack Nerd Font Mono", textSize = 15,
     fillColor = { hex = "#5a4f6e", alpha = 0.97 }, strokeColor = { hex = "#ffc0e5" }, textColor = { hex = "#ffffff" } }, 10) end)

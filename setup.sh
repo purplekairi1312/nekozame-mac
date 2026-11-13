@@ -45,6 +45,8 @@ mkdir -p "$HOME/.config/nekozame"
 place "$HERE/aerospace/aerospace.toml" "$HOME/.config/aerospace/aerospace.toml"
 # one set of spaces across screens: what aerospace works best with (from the next login)
 defaults write com.apple.spaces spans-displays -bool true
+# Ctrl+Cmd+drag moves a window from anywhere on it, not just the title bar
+defaults write -g NSWindowShouldDragOnGesture -bool true
 open -g -a AeroSpace
 # PaperWM (scrolling tiling) is ready for when hammerspoon reads macOS 27's spaces
 
