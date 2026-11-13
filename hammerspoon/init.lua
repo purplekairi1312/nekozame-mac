@@ -35,14 +35,17 @@ local binds = {
     switch_space_r = w(nil, "pagedown"), switch_space_l = w(nil, "pageup"),
     move_window_r = w({ "shift" }, "pagedown"), move_window_l = w({ "shift" }, "pageup"),
 }
+-- spaces 1-9: Option+number (Alt+number in nekozame os), Shift to take the window
 for i = 1, 9 do
-    binds["switch_space_" .. i] = w(nil, tostring(i))
-    binds["move_window_" .. i] = w({ "shift" }, tostring(i))
+    binds["switch_space_" .. i] = { { "alt" }, tostring(i) }
+    binds["move_window_" .. i] = { { "alt", "shift" }, tostring(i) }
 end
 spoon.PaperWM:bindHotkeys(binds)
 spoon.PaperWM.window_gap = 10
--- room for the bar (34px tall, 6px down from the top)
-spoon.PaperWM.external_bar = { top = 46 }
+-- room for the bar: it's 40px and covers the macOS menu bar, which windows already
+-- stay clear of
+local menubar = hs.screen.mainScreen():frame().y - hs.screen.mainScreen():fullFrame().y
+spoon.PaperWM.external_bar = { top = math.max(0, 40 - menubar) + 4 }
 -- the mouse: Ctrl+Cmd+drag picks a window up and drops it in a new spot (niri's
 -- Super+drag); Ctrl+Option+drag slides the whole row. Cmd+click stays the apps'
 spoon.PaperWM.lift_window = { "ctrl", "cmd" }
@@ -110,6 +113,33 @@ power:choices({ { text = "Lock", id = "lock" }, { text = "Sleep", id = "sleep" }
 bind(WIN, "forwarddelete", function() power:show() end)
 bind(WIN, "delete", function() power:show() end)
 
+-- the focused app's menus (File, Edit...), from the bar: click its name there
+function nekozameAppMenu()
+    local app = hs.application.frontmostApplication()
+    local function convert(items, path)
+        local out = {}
+        for _, it in ipairs(items or {}) do
+            local title = it.AXTitle or ""
+            if title == "" then
+                table.insert(out, { title = "-" })
+            else
+                local p = { table.unpack(path) }; table.insert(p, title)
+                local entry = { title = title, disabled = it.AXEnabled == false }
+                local kids = it.AXChildren and it.AXChildren[1]
+                if kids and #kids > 0 then entry.menu = convert(kids, p)
+                else entry.fn = function() app:selectMenuItem(p) end end
+                table.insert(out, entry)
+            end
+        end
+        return out
+    end
+    local menu = convert(app:getMenuItems(), {})
+    table.remove(menu, 1)  -- the Apple menu
+    local m = hs.menubar.new(false)
+    m:setMenu(menu)
+    m:popupMenu(hs.mouse.absolutePosition(), true)
+end
+
 -- the shortcuts, like Super+Shift+/ in nekozame os
 local help = [[
 apps: Cmd (Super in nekozame os)
@@ -125,7 +155,7 @@ windows: Ctrl+Option (Ctrl+Alt in nekozame os)
   R / Shift+R         sizes         - / =       narrower / wider
   C                   center        [ / ]       into / out of column
   W                   stack         Space       float
-  1-9                 space         + Shift     move to space
+  Option+1-9          space         + Shift     move to space
   Page Up / Down      prev / next space
   + Cmd + arrows      other monitor
   O                   overview      Delete      power menu
