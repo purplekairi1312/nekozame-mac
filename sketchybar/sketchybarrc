@@ -55,6 +55,9 @@ sketchybar --add item clock right \
            --set media icon=󰎈 icon.color=$PINK label.max_chars=40 scroll_texts=on update_freq=3 \
                  script="$P/media.sh" click_script="media-control toggle-play-pause"
 
+# the macOS menu bar's icons, left of what's playing
+"$P/tray.sh"
+
 # the rounded bar: one pill behind everything
 sketchybar --add bracket pill '/space\..*/' front_app media volume clock \
            --set pill background.color=$BG background.corner_radius=12 background.height=34 \
