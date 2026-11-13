@@ -3,7 +3,8 @@
 # time: what's done stays done, and it updates what it installed.
 #   on for everyone: AeroSpace and the shortcuts, the bar, the catshark
 #   wallpaper, the nekozame theme, Zen with the privacy extensions, Doom Emacs as
-#   $EDITOR, fastfetch, Tailscale and Moonlight
+#   $EDITOR, fastfetch, Tailscale and Moonlight, and the nekozame theme in
+#   Discord and Bitwig when they're installed
 #   asked: evil mode or another editor, music production, Helium
 # your own configs are kept: where you have one, nekozame's isn't put in its place.
 # (macOS's bash is 3.2: nothing newer in here)
@@ -50,6 +51,9 @@ place "$HERE/aerospace/aerospace.toml" "$HOME/.config/aerospace/aerospace.toml"
 defaults write com.apple.spaces spans-displays -bool true
 # Ctrl+Cmd+drag moves a window from anywhere on it, not just the title bar
 defaults write -g NSWindowShouldDragOnGesture -bool true
+# no window animations: macOS would animate every move AeroSpace makes, so windows
+# slide around when it shows and hides them (apps pick it up when they restart)
+defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
 open -g -a AeroSpace
 # PaperWM (scrolling tiling) is ready for when hammerspoon reads macOS 27's spaces
 
@@ -241,6 +245,66 @@ if ask "Set up music production? (DAWs and free plugins)" false; then
         | while read -r p; do
             if [ -n "$p" ]; then brew install --cask "${p%% *}" || true; fi  # nothing picked: nothing to do
         done
+fi
+
+# the nekozame theme in apps that need a little patching for it. both are redone
+# here after an app update replaces the patch
+step "Discord in nekozame (with Vencord)"
+if [ -d /Applications/Discord.app ]; then
+    VC="$HOME/Library/Application Support/Vencord"
+    if [ ! -f /Applications/Discord.app/Contents/Resources/_app.asar ]; then
+        # vencord goes into the official app; discord has to be closed for it
+        osascript -e 'quit app "Discord"' 2>/dev/null || true
+        tmp=$(mktemp -d)
+        fetch https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-darwin "$tmp/vencord"
+        chmod +x "$tmp/vencord"
+        "$tmp/vencord" -install -location /Applications/Discord.app </dev/null >/dev/null
+        rm -rf "$tmp"
+    fi
+    mkdir -p "$VC/themes" "$VC/settings"
+    fetch "$THEME/discord/nekozame.theme.css" "$SHARE/theme/discord.theme.css"
+    place "$SHARE/theme/discord.theme.css" "$VC/themes/nekozame.theme.css"
+    # turned on, next to any other themes you have on
+    python3 - "$VC/settings/settings.json" <<'PY'
+import json, os, sys
+p = sys.argv[1]
+s = json.load(open(p)) if os.path.exists(p) else {}
+t = s.setdefault("enabledThemes", [])
+if "nekozame.theme.css" not in t:
+    t.append("nekozame.theme.css")
+json.dump(s, open(p, "w"), indent=4)
+PY
+    ok "vencord in discord, with the nekozame theme on (again after discord updates: run this)"
+else
+    echo "  · no Discord here: install it, then run this again for the nekozame theme in it"
+fi
+
+step "Bitwig in nekozame"
+BW="/Applications/Bitwig Studio.app"
+if [ -d "$BW" ]; then
+    ver=$(defaults read "$BW/Contents/Info" CFBundleShortVersionString)
+    brew list openjdk >/dev/null 2>&1 || brew install -q openjdk
+    JAVA="$(brew --prefix openjdk)/bin/java"
+    # the bitwig theme editor patches bitwig once per version, so it reads its colours
+    # from ~/.bitwig-theme-editor (its newest build, pre-releases too: they keep up
+    # with bitwig)
+    jar=$(curl -fsSL https://api.github.com/repos/Berikai/bitwig-theme-editor/releases | python3 -c '
+import json, sys
+for r in json.load(sys.stdin):
+    for a in r["assets"]:
+        if a["name"].endswith(".jar"):
+            print(a["browser_download_url"]); sys.exit()')
+    fetch "$jar" "$SHARE/bitwig-theme-editor.jar"
+    fetch "$THEME/bitwig/nekozame.bte" "$SHARE/theme/bitwig.bte"
+    if pgrep -x "Bitwig Studio" >/dev/null; then
+        echo "  · Bitwig is open: close it and run this again for the nekozame theme"
+    else
+        (cd "$SHARE" && "$JAVA" -jar bitwig-theme-editor.jar "$BW/Contents/Java/bitwig.jar" </dev/null >/dev/null)
+        place "$SHARE/theme/bitwig.bte" "$HOME/.bitwig-theme-editor/versions/$ver/theme.bte"
+        ok "bitwig $ver (again after bitwig updates: run this)"
+    fi
+else
+    echo "  · no Bitwig here: if you get it, run this again for the nekozame theme in it"
 fi
 
 step "Helium (a second browser, optional)"
