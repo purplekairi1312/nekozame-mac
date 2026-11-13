@@ -18,8 +18,8 @@ mkdir -p "$SHARE" "$HOME/.local/bin" "$HOME/.config"
 
 command -v brew >/dev/null || { echo "install homebrew first: https://brew.sh" >&2; exit 1; }
 echo "installing what nekozame-mac uses (brew bundle)..."
-# newer homebrew only installs from taps you trust: sketchybar's and emacs-plus's
-for t in felixkratz/formulae d12frosted/emacs-plus; do
+# newer homebrew only installs from taps you trust: sketchybar's, emacs-plus's, aerospace's
+for t in felixkratz/formulae d12frosted/emacs-plus nikitabobko/tap; do
     brew tap -q "$t"
     brew trust "$t" 2>/dev/null || true  # (older homebrew has no trust: nothing to do)
 done
@@ -39,7 +39,15 @@ fetch() { curl -fsSL -o "$2" "$1"; }  # fetch URL FILE
 gum style --border rounded --border-foreground "#ffc0e5" --padding "0 2" \
     "nekozame-mac 🦈" "" "the defaults are already picked: press enter to keep them."
 
-step "Windows: PaperWM with niri's shortcuts (Option is niri's Mod)"
+step "Windows: AeroSpace, with the nekozame os shortcuts"
+mkdir -p "$HOME/.config/nekozame"
+[ -s "$HOME/.config/nekozame/wm" ] || echo aerospace > "$HOME/.config/nekozame/wm"
+place "$HERE/aerospace/aerospace.toml" "$HOME/.config/aerospace/aerospace.toml"
+# one set of spaces across screens: what aerospace works best with (from the next login)
+defaults write com.apple.spaces spans-displays -bool true
+open -g -a AeroSpace
+# PaperWM (scrolling like niri) is ready for when hammerspoon reads macOS 27's spaces
+
 if [ -d "$HOME/.hammerspoon/Spoons/PaperWM.spoon/.git" ]; then
     git -C "$HOME/.hammerspoon/Spoons/PaperWM.spoon" fetch -q origin
 else
