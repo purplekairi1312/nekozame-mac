@@ -94,7 +94,7 @@ best=$(python3 -c "
 r = $W / $H
 a = {'21x9': 21/9, '32x9': 32/9, '16x9': 16/9, '16x10': 16/10, '3x2': 3/2, '4x3': 4/3, '5x4': 5/4}
 print(min(a, key=lambda k: abs(a[k] - r)))")
-VARIANT=$(gum choose --header "Wallpaper:" --selected=small small big none)
+VARIANT=$(gum choose --header "Wallpaper: the nekozame logo on it, small, big or none (just the catshark)" --selected=small small big none)
 tmp=$(mktemp -d)
 fetch "$OS/system_files/usr/share/backgrounds/nekozame/$VARIANT-$best.mkv" "$tmp/loop.mkv"
 ffmpeg -v error -y -i "$tmp/loop.mkv" -c:v prores_ks -profile:v 4444 -pix_fmt yuv444p10le -vendor apl0 "$SHARE/wallpaper.mov"
