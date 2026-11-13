@@ -2,7 +2,7 @@
 
 nekozame for macOS.
 
-![nekozame-mac: the bar, Zen and Ghostty with fastfetch and btop, over the catshark wallpaper](assets/showcase.png)
+![nekozame-mac: the bar, Zen with SourceHut, Doom Emacs, and Ghostty with fastfetch and btop, over the catshark wallpaper](assets/showcase.png)
 
 - [AeroSpace](https://github.com/nikitabobko/AeroSpace) tiling: Ctrl+Option+arrows to focus, Shift to move, Option+1-9 for workspaces
 - Cmd for apps: Cmd+Return terminal, Cmd+E files, Cmd+Shift+E yazi, Cmd+B browser, on top of macOS's own. Cmd+Shift+/ shows every shortcut
