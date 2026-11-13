@@ -16,7 +16,7 @@ local binds = {
     swap_left = w({ "shift" }, "left"), swap_right = w({ "shift" }, "right"),
     swap_up = w({ "shift" }, "up"), swap_down = w({ "shift" }, "down"),
     focus_window_first = w(nil, "home"), focus_window_last = w(nil, "end"),
-    full_width = w(nil, "return"),               -- niri: maximize-column
+    full_width = w(nil, "return"),
     cycle_width = w(nil, "r"),                   -- switch-preset-column-width
     cycle_height = w({ "shift" }, "r"),          -- switch-preset-window-height
     decrease_width = w(nil, "-"), increase_width = w(nil, "="),
@@ -25,7 +25,6 @@ local binds = {
     toggle_stack = w(nil, "w"),                  -- tabbed column
     toggle_floating = w(nil, "space"),
     focus_floating = w({ "shift" }, "space"),
-    -- niri's workspaces go down/up; macOS spaces go right/left
     switch_space_r = w(nil, "pagedown"), switch_space_l = w(nil, "pageup"),
     move_window_r = w({ "shift" }, "pagedown"), move_window_l = w({ "shift" }, "pageup"),
 }
@@ -38,12 +37,11 @@ spoon.PaperWM:bindHotkeys(binds)
 spoon.PaperWM.window_gap = 10
 -- room for the bar (46px, over the macOS menu bar)
 spoon.PaperWM.external_bar = { top = 46 }
--- the mouse: Ctrl+Cmd+drag picks a window up and drops it in a new spot (niri's
--- Super+drag); Ctrl+Option+drag slides the whole row. Cmd+click stays the apps'
+-- the mouse: Ctrl+Cmd+drag picks a window up and drops it in a new spot; Ctrl+Option+drag slides the whole row. Cmd+click stays the apps'
 spoon.PaperWM.lift_window = { "ctrl", "cmd" }
 spoon.PaperWM.drag_window = { "ctrl", "alt" }
 spoon.PaperWM.scroll_window = { "ctrl", "alt" }   -- Ctrl+Option+scroll slides the row
--- like niri: new windows take half the screen, side by side; Ctrl+Option+R cycles
+-- new windows take half the screen, side by side; Ctrl+Option+R cycles
 -- a third, a half, two thirds
 spoon.PaperWM.default_width = 0.5
 spoon.PaperWM.window_ratios = { 1 / 3, 1 / 2, 2 / 3 }
@@ -76,7 +74,7 @@ for _, dir in ipairs({ "left", "right", "up", "down" }) do
 end
 
 -- dragging a tiled window by its title bar: PaperWM would keep pulling it back,
--- so it lets go while the window moves and tiles it where it's dropped (like niri).
+-- so it lets go while the window moves and tiles it where it's dropped.
 -- the app still gets every click; this only looks around once a drag starts
 local T = hs.eventtap.event.types
 local drag = nil  -- { start = point, win = window, floated = bool }
