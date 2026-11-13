@@ -238,7 +238,9 @@ if ask "Set up music production? (DAWs and free plugins)" false; then
         "lmms (free software)" "surge-xt (free software synth)" "dexed (free software FM synth)" \
         "cardinal (free software modular)" "vcv-rack (free software modular)" \
         "iem-plugin-suite (free software spatial audio)" "blackhole-2ch (free software: route audio between apps)" \
-        | while read -r p; do [ -n "$p" ] && { brew install --cask "${p%% *}" || true; }; done
+        | while read -r p; do
+            if [ -n "$p" ]; then brew install --cask "${p%% *}" || true; fi  # nothing picked: nothing to do
+        done
 fi
 
 step "Helium (a second browser, optional)"
