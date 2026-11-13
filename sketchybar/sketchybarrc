@@ -1,7 +1,7 @@
 #!/bin/bash
 # nekozame-mac: the bar. workspaces on the
 # left, the focused app (click it for its menus), what's playing, then volume, the
-# battery (on macs that have one) and the clock. it covers the macOS menu bar, so that one never pops out.
+# connection (ethernet or wi-fi), the battery (on macs that have one) and the clock. it covers the macOS menu bar, so that one never pops out.
 P="$CONFIG_DIR/plugins"
 BG=0xff5a4f6e       # Crowning
 PANEL=0xff4f4562    # Roman Purple
@@ -66,6 +66,12 @@ if pmset -g batt | grep -q InternalBattery; then
     BATTERY=battery
 fi
 
+# the connection: ethernet, wi-fi with its signal, or crossed out
+sketchybar --add item network right \
+           --set network update_freq=60 icon.color=$PINK label.drawing=off icon.padding_left=9 icon.padding_right=9 script="$P/network.sh" \
+           --subscribe network wifi_change system_woke \
+           --move network before volume
+
 # cava's bars, next to what's playing (nekozame-cava fills them in; hidden in silence)
 sketchybar --add item cava right \
            --set cava drawing=off icon.drawing=off background.drawing=off \
@@ -79,7 +85,7 @@ sketchybar --add item tray right \
                  click_script="$P/tray_toggle.sh"
 
 # the rounded bar: one pill behind everything
-sketchybar --add bracket pill '/space\..*/' front_app cava media tray volume $BATTERY clock \
+sketchybar --add bracket pill '/space\..*/' front_app cava media tray volume network $BATTERY clock \
            --set pill background.color=$BG background.corner_radius=12 background.height=34 \
                       background.border_width=2 background.border_color=$PANEL
 
