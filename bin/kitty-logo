@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """kitty-logo IMAGE COLUMNS: an image as text, for fastfetch's logo.
 
-prints the path of a file holding the image (kitty graphics, sent once) and the
-rows of placeholder characters that show it, then COLUMNS and ROWS. the picture
-is tied to those characters, so inside tmux it stays with its tab, scrolls with
-the text, and comes back when you switch back (ghostty and kitty draw it).
-the file is cached per image, size and terminal shape.
+sends the image to the terminal (kitty graphics, through tmux when inside it)
+and prints the path of a file with the rows of placeholder characters that show
+it, then COLUMNS and ROWS: fastfetch prints those as its logo. the picture is
+tied to the characters, so inside tmux it stays with its tab, scrolls with the
+text, and comes back when you switch back (ghostty and kitty draw it).
 """
 import base64, fcntl, os, struct, sys, termios, zlib
 
@@ -36,28 +36,28 @@ def main():
     image_id = (zlib.crc32(data) & 0xFFFFFF) or 1
     cache = os.path.expanduser("~/.cache/kitty-logo")
     os.makedirs(cache, exist_ok=True)
-    out = os.path.join(cache, f"{image_id:06x}-{cols}x{rows}{'-tmux' if in_tmux else ''}.txt")
-    if not os.path.exists(out):
-        def apc(body):  # one kitty graphics command, through tmux when inside it
-            cmd = f"\033_G{body}\033\\"
-            return f"\033Ptmux;{cmd.replace(chr(27), chr(27) * 2)}\033\\" if in_tmux else cmd
-        payload = base64.b64encode(data).decode()
-        chunks = [payload[i:i + 4096] for i in range(0, len(payload), 4096)]
-        send = ""
+    out = os.path.join(cache, f"{image_id:06x}-{cols}x{rows}.txt")
+    # the image itself: straight to the terminal (it's far too big to be part of a
+    # logo line), in 4k pieces
+    def apc(body):  # one kitty graphics command, through tmux when inside it
+        cmd = f"\033_G{body}\033\\"
+        return f"\033Ptmux;{cmd.replace(chr(27), chr(27) * 2)}\033\\" if in_tmux else cmd
+    payload = base64.b64encode(data).decode()
+    chunks = [payload[i:i + 4096] for i in range(0, len(payload), 4096)]
+    with open("/dev/tty", "w") as tty:
         for n, chunk in enumerate(chunks):
             more = 1 if n < len(chunks) - 1 else 0
-            if n == 0:  # transmit, with a virtual placement shown by the characters below
-                send += apc(f"a=T,U=1,f=100,q=2,i={image_id},c={cols},r={rows},m={more};{chunk}")
+            if n == 0:  # transmit, with a virtual placement shown by the characters
+                tty.write(apc(f"a=T,U=1,f=100,q=2,i={image_id},c={cols},r={rows},m={more};{chunk}"))
             else:
-                send += apc(f"m={more};{chunk}")
+                tty.write(apc(f"m={more};{chunk}"))
+    # the characters that show it, coloured with the image's id
+    if not os.path.exists(out):
         r, g, b = image_id >> 16, (image_id >> 8) & 255, image_id & 255
-        lines = []
-        for row in range(rows):
-            cells = "".join(PLACEHOLDER + chr(DIACRITICS[row]) + chr(DIACRITICS[col]) for col in range(cols))
-            lines.append(f"\033[38;2;{r};{g};{b}m{cells}\033[39m")
-        lines[0] = send + lines[0]
         with open(out, "w") as f:
-            f.write("\n".join(lines) + "\n")
+            for row in range(rows):
+                cells = "".join(PLACEHOLDER + chr(DIACRITICS[row]) + chr(DIACRITICS[col]) for col in range(cols))
+                f.write(f"\033[38;2;{r};{g};{b}m{cells}\033[39m\n")
     print(out, cols, rows)
 
 main()
