@@ -8,6 +8,7 @@
         "title",
         "break",
         { "type": "os", "key": " 󰣛" },
+        { "type": "command", "key": " 󰀵", "text": "echo nekozame-mac" },
         { "type": "kernel", "key": " " },
         { "type": "uptime", "key": " 󰅐" },
         "break",
