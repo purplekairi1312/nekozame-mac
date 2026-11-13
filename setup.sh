@@ -177,6 +177,10 @@ for prof in "$HOME/Library/Application Support/zen/Profiles"/*/; do
     for pref in toolkit.legacyUserProfileCustomizations.stylesheets browser.tabs.allow_transparent_browser; do
         grep -qs "\"$pref\"" "$prof/user.js" || echo "user_pref(\"$pref\", true);" >> "$prof/user.js"
     done
+    # sites send their light look, which dark reader turns nekozame (over an old
+    # dark setting of yours, which would leave sites in their own black)
+    grep -qs 'prefers-color-scheme.content-override' "$prof/user.js" \
+        || echo 'user_pref("layout.css.prefers-color-scheme.content-override", 1);' >> "$prof/user.js"
 done
 [ -n "$found" ] || echo "  · open Zen once, then run this again for the nekozame look"
 # dark reader and improvedtube only take their settings from an import
