@@ -91,6 +91,7 @@ windows: Ctrl+Option
   arrows              focus         + Shift     move
   Return              fullscreen in place (+ Shift: macOS fullscreen)
   - / =               narrower / wider      R  even sizes
+  Shift+R             tidy up: a clean row of even windows
   [ / ]               join the window left / right
   W                   stack like tabs       Space  float
   C                   side by side / on top of each other
