@@ -55,6 +55,8 @@ else
     grep -q "nekozame-mac" "$HOME/.hammerspoon/init.lua" && ok "~/.hammerspoon/init.lua" \
         || echo "  · ~/.hammerspoon/init.lua is yours: add  dofile(\"$HERE/hammerspoon/init.lua\")  to it"
 fi
+# PaperWM needs spaces to stay in order (macOS reorders them by recent use otherwise)
+defaults write com.apple.dock mru-spaces -bool false && killall Dock
 defaults write org.hammerspoon.Hammerspoon MJShowMenuIconKey -bool false
 open -g -a Hammerspoon
 echo "  Hammerspoon needs Accessibility: System Settings → Privacy & Security → Accessibility"
