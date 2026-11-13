@@ -48,6 +48,11 @@ spoon.PaperWM.external_bar = { top = 40 }
 -- Super+drag); Ctrl+Option+drag slides the whole row. Cmd+click stays the apps'
 spoon.PaperWM.lift_window = { "ctrl", "cmd" }
 spoon.PaperWM.drag_window = { "ctrl", "alt" }
+spoon.PaperWM.scroll_window = { "ctrl", "alt" }   -- Ctrl+Option+scroll slides the row
+-- like niri: new windows take half the screen, side by side; Ctrl+Option+R cycles
+-- a third, a half, two thirds
+spoon.PaperWM.default_width = 0.5
+spoon.PaperWM.window_ratios = { 1 / 3, 1 / 2, 2 / 3 }
 -- not windows to tile: menu bar apps, popups
 local filter = spoon.PaperWM.window_filter
 for _, app in ipairs({ "Tailscale", "Hammerspoon", "System Settings", "Activity Monitor" }) do filter:rejectApp(app) end
@@ -111,6 +116,43 @@ power:choices({ { text = "Lock", id = "lock" }, { text = "Sleep", id = "sleep" }
 bind(WIN, "forwarddelete", function() power:show() end)
 bind(WIN, "delete", function() power:show() end)
 
+-- dragging a tiled window by its title bar: PaperWM would keep pulling it back,
+-- so it lets go while the window moves and tiles it where it's dropped (like niri).
+-- the app still gets every click; this only looks around once a drag starts
+local T = hs.eventtap.event.types
+local drag = nil  -- { start = point, win = window, floated = bool }
+local dragTap = hs.eventtap.new({ T.leftMouseDown, T.leftMouseDragged, T.leftMouseUp }, function(e)
+    local t = e:getType()
+    if t == T.leftMouseDown then
+        drag = { start = e:location() }
+    elseif t == T.leftMouseDragged and drag and not drag.floated then
+        if drag.win == nil then
+            drag.win = false
+            for _, win in ipairs(hs.window.orderedWindows()) do
+                if hs.geometry(drag.start):inside(win:frame()) then
+                    if spoon.PaperWM.state.windowIndex(win) then drag.win = win; drag.frame = win:frame() end
+                    break
+                end
+            end
+        end
+        if drag.win then
+            local f = drag.win:frame()
+            if f.x ~= drag.frame.x or f.y ~= drag.frame.y then  -- macOS is moving it: the title bar
+                spoon.PaperWM.floating.toggleFloating(drag.win)
+                drag.floated = true
+            end
+        end
+    elseif t == T.leftMouseUp and drag then
+        if drag.floated then
+            local win = drag.win
+            hs.timer.doAfter(0.05, function() spoon.PaperWM.floating.toggleFloating(win) end)
+        end
+        drag = nil
+    end
+    return false
+end)
+dragTap:start()
+
 -- the focused app's menus (File, Edit...), from the bar: click its name there
 function nekozameAppMenu()
     local app = hs.application.frontmostApplication()
@@ -160,7 +202,8 @@ windows: Ctrl+Option (Ctrl+Alt in nekozame os)
 
 mouse
   Ctrl+Cmd+drag       move a window (Super+drag in nekozame os)
-  Ctrl+Option+drag    slide the row
+  Ctrl+Option+drag    slide the row (or Ctrl+Option+scroll)
+  title bar drag      drop the window in a new spot
 ]]
 bind({ "cmd", "shift" }, "/", function() hs.alert.show(help, { textFont = "Hack Nerd Font Mono", textSize = 15,
     fillColor = { hex = "#5a4f6e", alpha = 0.97 }, strokeColor = { hex = "#ffc0e5" }, textColor = { hex = "#ffffff" } }, 10) end)
