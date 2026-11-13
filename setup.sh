@@ -117,7 +117,8 @@ fetch "$THEME/cava/config" "$SHARE/theme/cava"
 fetch "$THEME/emacs/nekozame-theme.el" "$SHARE/theme/nekozame-theme.el"
 fetch "$THEME/btop/nekozame.theme" "$SHARE/theme/btop.theme"
 place "$SHARE/theme/ghostty" "$HOME/.config/ghostty/themes/nekozame"
-[ -e "$HOME/.config/ghostty/config" ] || printf 'theme = nekozame\nfont-family = Hack Nerd Font\n' > "$HOME/.config/ghostty/config"
+# cmd+t: a new window instead of a tab (windows tile; macOS's native tabs don't)
+[ -e "$HOME/.config/ghostty/config" ] || printf 'theme = nekozame\nfont-family = Hack Nerd Font\nkeybind = cmd+t=new_window\n' > "$HOME/.config/ghostty/config"
 place "$SHARE/theme/cava" "$HOME/.config/cava/config"
 place "$SHARE/theme/btop.theme" "$HOME/.config/btop/themes/nekozame.theme"
 
