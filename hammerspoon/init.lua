@@ -2,6 +2,7 @@
 --   Cmd          apps, like Super in nekozame os: macOS's own Cmd+C/V/X/Q..., plus
 --                Cmd+Return terminal, Cmd+E files, Cmd+Shift+E yazi, Cmd+B browser
 --   Ctrl+Option  windows, like Ctrl+Alt in nekozame os: focus, move, size, spaces
+-- the mouse: Ctrl+Cmd+drag moves a window, Ctrl+Option+drag slides the row.
 -- Cmd+Shift+/ shows them all.
 
 -- the hs command (the bar's space buttons use it)
@@ -40,6 +41,16 @@ for i = 1, 9 do
 end
 spoon.PaperWM:bindHotkeys(binds)
 spoon.PaperWM.window_gap = 10
+-- room for the bar (34px tall, 6px down from the top)
+spoon.PaperWM.external_bar = { top = 46 }
+-- the mouse: Ctrl+Cmd+drag picks a window up and drops it in a new spot (niri's
+-- Super+drag); Ctrl+Option+drag slides the whole row. Cmd+click stays the apps'
+spoon.PaperWM.lift_window = { "ctrl", "cmd" }
+spoon.PaperWM.drag_window = { "ctrl", "alt" }
+-- not windows to tile: menu bar apps, popups
+local filter = spoon.PaperWM.window_filter
+for _, app in ipairs({ "Tailscale", "Hammerspoon", "System Settings", "Activity Monitor" }) do filter:rejectApp(app) end
+filter:setAppFilter("Zen", { rejectTitles = { "^Extension:" } })
 spoon.PaperWM:start()
 
 local function bind(mods, key, fn) hs.hotkey.bind(mods, key, fn) end
@@ -118,6 +129,10 @@ windows: Ctrl+Option (Ctrl+Alt in nekozame os)
   Page Up / Down      prev / next space
   + Cmd + arrows      other monitor
   O                   overview      Delete      power menu
+
+mouse
+  Ctrl+Cmd+drag       move a window (Super+drag in nekozame os)
+  Ctrl+Option+drag    slide the row
 ]]
 bind({ "cmd", "shift" }, "/", function() hs.alert.show(help, { textFont = "Hack Nerd Font Mono", textSize = 15,
     fillColor = { hex = "#5a4f6e", alpha = 0.97 }, strokeColor = { hex = "#ffc0e5" }, textColor = { hex = "#ffffff" } }, 10) end)
