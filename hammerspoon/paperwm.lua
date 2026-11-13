@@ -1,5 +1,4 @@
--- nekozame-mac: PaperWM (scrolling tiling like niri) with the nekozame os window
--- keys. waits for hammerspoon to read macOS 27's spaces properly
+-- nekozame-mac: PaperWM, scrolling tiling, with the same window keys as AeroSpace. waits for hammerspoon to read macOS 27's spaces properly
 -- (github.com/Hammerspoon/hammerspoon/issues/3897); until then AeroSpace does the
 -- windows. to use it: echo paperwm > ~/.config/nekozame/wm, quit aerospace, reload
 local WIN = { "ctrl", "alt" }
@@ -30,7 +29,7 @@ local binds = {
     switch_space_r = w(nil, "pagedown"), switch_space_l = w(nil, "pageup"),
     move_window_r = w({ "shift" }, "pagedown"), move_window_l = w({ "shift" }, "pageup"),
 }
--- spaces 1-9: Option+number (Alt+number in nekozame os), Shift to take the window
+-- spaces 1-9: Option+number, Shift to take the window
 for i = 1, 9 do
     binds["switch_space_" .. i] = { { "alt" }, tostring(i) }
     binds["move_window_" .. i] = { { "alt", "shift" }, tostring(i) }

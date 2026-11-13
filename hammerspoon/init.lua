@@ -1,7 +1,7 @@
--- nekozame-mac: the nekozame os shortcuts that aren't the window manager's.
---   Cmd          apps, like Super in nekozame os: macOS's own Cmd+C/V/X/Q..., plus
+-- nekozame-mac: the shortcuts that aren't the window manager's.
+--   Cmd          apps: macOS's own Cmd+C/V/X/Q..., plus
 --                Cmd+Return terminal, Cmd+E files, Cmd+Shift+E yazi, Cmd+B browser
---   Ctrl+Option  windows, like Ctrl+Alt in nekozame os: AeroSpace (aerospace.toml),
+--   Ctrl+Option  windows: AeroSpace (aerospace.toml),
 --                or PaperWM (paperwm.lua) once hammerspoon can read macOS 27's
 --                spaces: echo paperwm > ~/.config/nekozame/wm
 -- Cmd+Shift+/ shows them all.
@@ -32,14 +32,13 @@ bind({ "cmd" }, "e", function() run("/usr/bin/open", { os.getenv("HOME") }) end)
 bind({ "cmd", "shift" }, "e", function() run("/usr/bin/open", { "-na", "Ghostty", "--args", "-e", "yazi" }) end)
 bind({ "cmd" }, "b", function() hs.application.launchOrFocusByBundleID("app.zen-browser.zen") end)
 -- (Cmd+Space spotlight, Cmd+Q quit, Cmd+Tab, Ctrl+Cmd+Q lock, Cmd+Shift+Q log out,
--- Cmd+Option+Esc force quit, Cmd+Shift+3/4/5 screenshots: macOS's own, and the
--- same keys in nekozame os)
+-- Cmd+Option+Esc force quit, Cmd+Shift+3/4/5 screenshots: macOS's own)
 -- screenshots on a PC keyboard: Print is F13 on a mac
 bind({}, "f13", function() run("/usr/sbin/screencapture", { "-i", "-c" }) end)
 bind({ "ctrl" }, "f13", function() run("/usr/sbin/screencapture", { "-c" }) end)
 bind({ "alt" }, "f13", function() run("/usr/sbin/screencapture", { "-i", "-w", "-c" }) end)
 
--- power menu: Ctrl+Option+Delete (Ctrl+Alt+Delete in nekozame os)
+-- power menu: Ctrl+Option+Delete
 local power = hs.chooser.new(function(c)
     if not c then return end
     ({ lock = hs.caffeinate.lockScreen, sleep = hs.caffeinate.systemSleep,
@@ -79,16 +78,16 @@ function nekozameAppMenu()
     m:popupMenu(hs.mouse.absolutePosition(), true)
 end
 
--- the shortcuts, like Super+Shift+/ in nekozame os
+-- all the shortcuts: Cmd+Shift+/
 local help = [[
-apps: Cmd (Super in nekozame os)
+apps: Cmd
   Cmd+C / V / X       copy / paste / cut
   Cmd+Q               quit          Cmd+Space   launcher
   Cmd+Return          terminal      Cmd+B       browser
   Cmd+E / Shift+E     files / yazi
   Ctrl+Cmd+Q          lock          Cmd+Shift+3/4/5  screenshot
 
-windows: Ctrl+Option (Ctrl+Alt in nekozame os)
+windows: Ctrl+Option
   arrows              focus         + Shift     move
   Return              fullscreen in place (+ Shift: macOS fullscreen)
   - / =               narrower / wider      R  even sizes
@@ -99,7 +98,7 @@ windows: Ctrl+Option (Ctrl+Alt in nekozame os)
   + Cmd + arrows      other monitor (+ Shift: take the window)
   Delete              power menu
 
-workspaces: Option+1-9 (Alt+1-9 in nekozame os), + Shift takes the window
+workspaces: Option+1-9, + Shift takes the window
 
 mouse: drag a window's edge to resize, its neighbours follow
 ]]

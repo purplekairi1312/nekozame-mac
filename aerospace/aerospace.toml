@@ -1,8 +1,8 @@
-# nekozame-mac: AeroSpace, with the nekozame os shortcuts. i3-style tiling with its
+# nekozame-mac: AeroSpace, i3-style tiling with its
 # own workspaces (it doesn't need macOS Spaces, which hammerspoon can't read on
 # macOS 27, so PaperWM waits: hammerspoon/paperwm.lua).
-#   Ctrl+Option   windows (Ctrl+Alt in nekozame os)
-#   Option+1-9    workspaces (Alt+1-9 in nekozame os)
+#   Ctrl+Option   windows
+#   Option+1-9    workspaces
 #   Cmd           apps: macOS's own, plus hammerspoon's Cmd+Return / E / B
 config-version = 2
 start-at-login = true
@@ -49,7 +49,7 @@ ctrl-alt-shift-enter = 'macos-native-fullscreen'
 ctrl-alt-minus = 'resize smart -60'
 ctrl-alt-equal = 'resize smart +60'
 ctrl-alt-r = 'balance-sizes'
-# into a neighbour's column / back out (niri: consume / expel)
+# into a neighbour's column
 ctrl-alt-leftSquareBracket = 'join-with left'
 ctrl-alt-rightSquareBracket = 'join-with right'
 # stacked like tabs, or side by side; floating
