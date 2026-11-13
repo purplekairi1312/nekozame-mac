@@ -168,7 +168,12 @@ for prof in "$HOME/Library/Application Support/zen/Profiles"/*/; do
     [ -f "$prof/prefs.js" ] || continue
     found=1
     place "$SHARE/theme/zen/userChrome.css" "$prof/chrome/userChrome.css"
-    place "$SHARE/theme/zen/userContent.css" "$prof/chrome/userContent.css"
+    # userContent.css is read by zen's sandboxed page processes, which can't follow a
+    # link out of the profile: a copy (updated when it's nekozame's own)
+    uc="$prof/chrome/userContent.css"
+    if [ -L "$uc" ] || [ ! -e "$uc" ] || grep -qs "nekozame for web pages" "$uc"; then
+        rm -f "$uc"; cp "$SHARE/theme/zen/userContent.css" "$uc"; ok "${uc/#$HOME/~}"
+    else echo "  · ${uc/#$HOME/~} is yours, kept"; fi
     for pref in toolkit.legacyUserProfileCustomizations.stylesheets browser.tabs.allow_transparent_browser; do
         grep -qs "\"$pref\"" "$prof/user.js" || echo "user_pref(\"$pref\", true);" >> "$prof/user.js"
     done
