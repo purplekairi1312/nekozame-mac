@@ -134,6 +134,8 @@ place "$SHARE/theme/ghostty" "$HOME/.config/ghostty/themes/nekozame"
 [ -e "$HOME/.config/ghostty/config" ] || printf 'theme = nekozame\nfont-family = Hack Nerd Font\nkeybind = cmd+t=new_window\n' > "$HOME/.config/ghostty/config"
 place "$SHARE/theme/cava" "$HOME/.config/cava/config"
 place "$SHARE/theme/btop.theme" "$HOME/.config/btop/themes/nekozame.theme"
+# btop only writes its config on first quit: until then, it'd use its default colours
+[ -e "$HOME/.config/btop/btop.conf" ] || printf 'color_theme = "nekozame"\ntheme_background = true\n' > "$HOME/.config/btop/btop.conf"
 
 step "fastfetch, with the bubble logo"
 mkdir -p "$SHARE/fastfetch"
