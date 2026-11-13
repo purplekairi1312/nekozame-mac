@@ -1,5 +1,5 @@
 #!/bin/bash
-# nekozame-mac: the bar, like dankmaterialshell's in nekozame os. spaces on the
+# nekozame-mac: the bar. workspaces on the
 # left, the focused app (click it for its menus), what's playing, then volume and
 # the clock. it covers the macOS menu bar, so that one never pops out.
 P="$CONFIG_DIR/plugins"

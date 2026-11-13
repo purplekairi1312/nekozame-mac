@@ -1,6 +1,6 @@
 // nekozame-wallpaper: the animated catshark behind the desktop, on every screen.
 // the loop is tiny pixel art (480x270), so it's scaled up by a whole number with
-// nearest-neighbour, like nekozame os does, and cropped to fill the screen.
+// nearest-neighbour, and cropped to fill the screen.
 //   nekozame-wallpaper LOOP.mov
 import AppKit
 import AVFoundation

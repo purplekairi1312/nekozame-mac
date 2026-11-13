@@ -1,5 +1,5 @@
 // nekozame-mac fastfetch: the bubble logo (an image in ghostty and kitty, text
-// elsewhere) and nekozame pink, like nekozame os
+// elsewhere) and nekozame pink
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
     "logo": { "type": "auto", "source": "@SHARE@/fastfetch/logo.png", "width": 30, "padding": { "top": 1, "right": 2 } },

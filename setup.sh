@@ -1,7 +1,7 @@
 #!/bin/bash
-# nekozame-mac setup: macOS as close to nekozame os as it gets. run it again any
+# nekozame-mac setup. run it again any
 # time: what's done stays done, and it updates what it installed.
-#   on for everyone: PaperWM with niri's shortcuts, the bar, the catshark
+#   on for everyone: AeroSpace and the shortcuts, the bar, the catshark
 #   wallpaper, the nekozame theme, Zen with the privacy extensions, Doom Emacs as
 #   $EDITOR, fastfetch, Tailscale and Moonlight
 #   asked: evil mode or another editor, music production, Helium
@@ -39,14 +39,14 @@ fetch() { curl -fsSL -o "$2" "$1"; }  # fetch URL FILE
 gum style --border rounded --border-foreground "#ffc0e5" --padding "0 2" \
     "nekozame-mac 🦈" "" "the defaults are already picked: press enter to keep them."
 
-step "Windows: AeroSpace, with the nekozame os shortcuts"
+step "Windows: AeroSpace"
 mkdir -p "$HOME/.config/nekozame"
 [ -s "$HOME/.config/nekozame/wm" ] || echo aerospace > "$HOME/.config/nekozame/wm"
 place "$HERE/aerospace/aerospace.toml" "$HOME/.config/aerospace/aerospace.toml"
 # one set of spaces across screens: what aerospace works best with (from the next login)
 defaults write com.apple.spaces spans-displays -bool true
 open -g -a AeroSpace
-# PaperWM (scrolling like niri) is ready for when hammerspoon reads macOS 27's spaces
+# PaperWM (scrolling tiling) is ready for when hammerspoon reads macOS 27's spaces
 
 if [ -d "$HOME/.hammerspoon/Spoons/PaperWM.spoon/.git" ]; then
     git -C "$HOME/.hammerspoon/Spoons/PaperWM.spoon" fetch -q origin
@@ -56,7 +56,7 @@ fi
 git -C "$HOME/.hammerspoon/Spoons/PaperWM.spoon" checkout -q "$PAPERWM"
 if [ ! -e "$HOME/.hammerspoon/init.lua" ]; then
     # yours to add to: nekozame's part is loaded from here
-    printf -- '-- nekozame-mac: PaperWM and niri'"'"'s shortcuts. add your own below.\ndofile("%s/hammerspoon/init.lua")\n' "$HERE" \
+    printf -- '-- nekozame-mac: the shortcuts. add your own below.\ndofile("%s/hammerspoon/init.lua")\n' "$HERE" \
         > "$HOME/.hammerspoon/init.lua"
     ok "~/.hammerspoon/init.lua"
 else
@@ -123,7 +123,7 @@ sed "s|@SHARE@|$SHARE|g" "$HERE/fastfetch/config.jsonc" > "$SHARE/fastfetch/conf
 place "$SHARE/fastfetch/config.jsonc" "$HOME/.config/fastfetch/config.jsonc"
 
 step "Zen, ready for privacy"
-# the same settings as nekozame os, as zen's macOS preferences (it reads its
+# nekozame's privacy settings, as zen's macOS preferences (it reads its
 # policies from there). merged in: zen's other preferences stay
 pol=$(mktemp)
 fetch "$OS/system_files/usr/share/nekozame-os/zen/policies/policies.json" "$pol"

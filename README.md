@@ -1,14 +1,15 @@
 # nekozame-mac
 
-macOS as close to [nekozame os](https://git.sr.ht/~purplekairi1312/nekozame-os) as it gets, for when you're on a Mac too.
+nekozame for macOS.
 
-- [PaperWM](https://github.com/mogenson/PaperWM.spoon) for scrolling tiling like niri, with the same shortcuts as nekozame os: Cmd for apps (Cmd+C/V/X, Cmd+Q, Cmd+Return terminal, Cmd+E files, Cmd+B browser) and Ctrl+Option for windows (arrows to focus, Shift+arrows to move, 1-9 for spaces). Cmd+Shift+/ shows them all
-- A [SketchyBar](https://github.com/FelixKratz/SketchyBar) bar like DankMaterialShell's: spaces, the focused app, what's playing, volume and the clock
+- [AeroSpace](https://github.com/nikitabobko/AeroSpace) tiling: Ctrl+Option+arrows to focus, Shift to move, Option+1-9 for workspaces
+- Cmd for apps: Cmd+Return terminal, Cmd+E files, Cmd+Shift+E yazi, Cmd+B browser, on top of macOS's own. Cmd+Shift+/ shows every shortcut
+- A rounded [SketchyBar](https://github.com/FelixKratz/SketchyBar) bar: workspaces, the app's menus (click its name), what's playing, volume and the clock
 - The animated catshark wallpaper, sharp on any screen shape <3
 - The [nekozame theme](https://git.sr.ht/~purplekairi1312/nekozame-theme) in Ghostty, Emacs, cava and btop, and fastfetch with the bubble logo
-- Zen with the same privacy setup as nekozame os: Dark Reader, uBlock Origin, Privacy Badger, LibRedirect, ClearURLs, Consent-O-Matic and [nekojs](https://git.sr.ht/~purplekairi1312/nekojs), DuckDuckGo, HTTPS-only, no telemetry, no WebRTC leaks (Helium optional, with the same)
+- Zen, ready for privacy: Dark Reader, uBlock Origin, Privacy Badger, LibRedirect, ClearURLs, Consent-O-Matic and [nekojs](https://git.sr.ht/~purplekairi1312/nekojs), DuckDuckGo, HTTPS-only, no telemetry, no WebRTC leaks (Helium optional, with the same)
 - Doom Emacs as `$EDITOR`, always running as a daemon (evil mode or another editor if you want)
-- Tailscale and Moonlight, to reach your nekozame os machines
+- Tailscale and Moonlight
 - Music production on request: Bitwig, Reaper, LMMS and free plugins
 
 ## Install
@@ -20,8 +21,8 @@ git clone https://git.sr.ht/~purplekairi1312/nekozame-mac ~/.local/share/nekozam
 ~/.local/share/nekozame-mac/setup.sh
 ```
 
-It asks about the optional bits, and keeps your own configs where you have them. Run it again to update. Then give Hammerspoon Accessibility access (System Settings → Privacy & Security), and log out and back in once.
+It asks about the optional bits, and keeps your own configs where you have them. Run it again to update. Then give AeroSpace and Hammerspoon Accessibility access (System Settings → Privacy & Security), and log out and back in once.
 
 ## License
 
-GPL-3.0-or-later. The wallpaper and logo are nekozame os art, CC BY-NC-SA 4.0, downloaded from there when you install.
+GPL-3.0-or-later. The wallpaper and logo are nekozame art, CC BY-NC-SA 4.0, downloaded when you install.
