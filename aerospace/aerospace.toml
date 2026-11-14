@@ -193,7 +193,9 @@ if.app-id = 'com.apple.garageband10'
 run = 'move-node-to-workspace --focus-follows-window 4'
 [[on-window-detected]]
 if.app-id = 'com.splice.Splice'
-run = 'move-node-to-workspace --focus-follows-window 4'
+# next to the DAW, to drag samples over: side by side on an ultrawide, floating
+# over the DAW's bottom on a laptop (aerospace/splice.sh)
+run = ['move-node-to-workspace --focus-follows-window 4', 'exec-and-forget "$HOME/.local/share/nekozame-mac/aerospace/splice.sh"']
 [[on-window-detected]]
 if.app-id = 'com.splice.Instrument'
 run = 'move-node-to-workspace --focus-follows-window 4'
