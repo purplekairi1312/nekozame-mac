@@ -24,7 +24,17 @@ for t in felixkratz/formulae d12frosted/emacs-plus nikitabobko/tap; do
     brew tap -q "$t"
     brew trust "$t" 2>/dev/null || true  # (older homebrew has no trust: nothing to do)
 done
+# a new emacs while its daemon runs: macOS kills the daemon's restart over the old
+# build's signature, and emacs won't open. so the daemon stops for the update
+EMACS_AGENT="$HOME/Library/LaunchAgents/com.nekozame.emacs.plist"
+emacs_paused=
+if launchctl list com.nekozame.emacs >/dev/null 2>&1 &&
+    brew outdated --cask --greedy --quiet | grep -q 'emacs-plus-app'; then
+    launchctl bootout "gui/$(id -u)/com.nekozame.emacs"
+    emacs_paused=1
+fi
 brew bundle --file="$HERE/Brewfile"
+[ -z "$emacs_paused" ] || launchctl bootstrap "gui/$(id -u)" "$EMACS_AGENT"
 
 pink() { gum style --foreground "#ffc0e5" --bold "$*"; }
 step() { echo; pink "▸ $*"; }
