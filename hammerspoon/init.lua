@@ -73,6 +73,33 @@ power:choices({ { text = "Lock", id = "lock" }, { text = "Sleep", id = "sleep" }
 bind(WIN, "forwarddelete", function() power:show() end)
 bind(WIN, "delete", function() power:show() end)
 
+-- shazam, from the bar: opens control center's music recognition (its button is
+-- in the menu bar, under the bar) and presses "recognize music" in it. both are
+-- found by their ids, so it works in any language
+local function axFind(el, id, depth)
+    if el:attributeValue("AXIdentifier") == id then return el end
+    if depth > 8 then return nil end
+    for _, child in ipairs(el:attributeValue("AXChildren") or {}) do
+        local hit = axFind(child, id, depth + 1)
+        if hit then return hit end
+    end
+end
+function nekozameShazam()
+    local cc = hs.application.get("com.apple.controlcenter")
+    if not cc then return end
+    local app = hs.axuielement.applicationElement(cc)
+    local button = axFind(app, "com.apple.menuextra.musicrecognition", 0)
+    if not button then return end
+    button:performAction("AXPress")
+    hs.timer.doAfter(0.4, function()
+        for _, w in ipairs(app:attributeValue("AXWindows") or {}) do
+            local listen = axFind(w, "musicrecognition-header-count", 0)
+            if listen then listen:performAction("AXPress") return end
+        end
+    end)
+end
+hs.urlevent.bind("shazam", nekozameShazam)
+
 -- the focused app's menus (File, Edit...), from the bar: click its name there
 function nekozameAppMenu()
     local app = hs.application.frontmostApplication()

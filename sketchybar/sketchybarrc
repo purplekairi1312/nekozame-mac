@@ -55,6 +55,13 @@ sketchybar --add item clock right \
            --set media icon=󰎈 icon.color=$PINK label.max_chars=40 scroll_texts=on update_freq=3 \
                  script="$P/media.sh" click_script="media-control toggle-play-pause"
 
+# shazam, next to what's playing: what's playing around you, with macos's own
+# music recognition (hammerspoon presses it in control center; the logo is its icon)
+sketchybar --add item shazam right \
+           --set shazam icon.drawing=off label.drawing=off background.drawing=on width=28 \
+                 background.image=app.com.apple.musicrecognition.mac background.image.scale=0.6 \
+                 click_script="open -g hammerspoon://shazam"
+
 # the battery, between the volume and the clock, only on macs that have one
 BATTERY=""
 if pmset -g batt | grep -q InternalBattery; then
@@ -85,7 +92,7 @@ sketchybar --add item tray right \
                  click_script="$P/tray_toggle.sh"
 
 # the rounded bar: one pill behind everything
-sketchybar --add bracket pill '/space\..*/' front_app cava media tray volume network $BATTERY clock \
+sketchybar --add bracket pill '/space\..*/' front_app cava shazam media tray volume network $BATTERY clock \
            --set pill background.color=$BG background.corner_radius=12 background.height=34 \
                       background.border_width=2 background.border_color=$PANEL
 

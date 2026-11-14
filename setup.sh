@@ -173,6 +173,10 @@ for d in HardDrives ExternalHardDrives RemovableMedia MountedServers; do
 done
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+# control center's music recognition in the menu bar (under the bar): its shazam
+# button presses it
+defaults -currentHost write com.apple.controlcenter MusicRecognition -int 18
+killall ControlCenter 2>/dev/null || true
 killall Finder Dock 2>/dev/null || true
 ok "macOS in nekozame colours, and finder"
 
