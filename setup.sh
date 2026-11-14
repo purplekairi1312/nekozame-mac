@@ -146,6 +146,18 @@ place "$SHARE/theme/cava" "$HOME/.config/cava/config"
 place "$SHARE/theme/btop.theme" "$HOME/.config/btop/themes/nekozame.theme"
 # btop only writes its config on first quit: until then, it'd use its default colours
 [ -e "$HOME/.config/btop/btop.conf" ] || printf 'color_theme = "nekozame"\ntheme_background = true\n' > "$HOME/.config/btop/btop.conf"
+place "$HERE/yazi/theme.toml" "$HOME/.config/yazi/theme.toml"
+# macOS itself, as far as it lets you: dark, pink buttons, sidebar icons and
+# selections, Pretty in Pink behind selected text, and every icon tinted purple
+# (finder and the dock now; menus and other apps when they restart or you log in again)
+defaults write -g AppleInterfaceStyle -string Dark
+defaults write -g AppleAccentColor -int 6
+defaults write -g AppleHighlightColor -string "1.000000 0.752941 0.898039 Other"
+defaults write -g AppleIconAppearanceTheme -string TintedLight
+defaults write -g AppleIconAppearanceTintColor -string Other
+defaults write -g AppleIconAppearanceCustomTintColor -string "0.779682 0.384318 0.887264 1.000000"
+killall Finder Dock 2>/dev/null || true
+ok "macOS in nekozame colours"
 
 step "fastfetch, with the bubble logo"
 mkdir -p "$SHARE/fastfetch"
