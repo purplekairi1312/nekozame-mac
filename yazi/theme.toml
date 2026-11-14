@@ -1,0 +1,97 @@
+# nekozame-mac: yazi in nekozame colours. only what differs from yazi's own
+# theme is here; the background stays see-through, like Ghostty's
+#   pink #ffc0e5  lilac #e3ccff  baby blue #b8e4ff  mint #c8f7dc  lemon #fff1b0
+#   rose #ffc0d2  peach #ffd2b8  plum #433a55  panel #4f4562  wisteria #b3a7cb
+
+[mgr]
+cwd = { fg = "#ffc0e5", bold = true }
+find_keyword  = { fg = "#fff1b0", bold = true, italic = true, underline = true }
+find_position = { fg = "#ffc0e5", bg = "reset", bold = true, italic = true }
+marker_copied   = { fg = "#c8f7dc", bg = "#c8f7dc" }
+marker_cut      = { fg = "#ffc0d2", bg = "#ffc0d2" }
+marker_marked   = { fg = "#b8e4ff", bg = "#b8e4ff" }
+marker_selected = { fg = "#fff1b0", bg = "#fff1b0" }
+count_copied   = { fg = "#433a55", bg = "#c8f7dc" }
+count_cut      = { fg = "#433a55", bg = "#ffc0d2" }
+count_selected = { fg = "#433a55", bg = "#fff1b0" }
+border_style  = { fg = "#7a6e90" }
+
+[indicator]
+parent  = { fg = "#433a55", bg = "#b3a7cb" }
+current = { fg = "#433a55", bg = "#ffc0e5", bold = true }
+preview = { fg = "#ffc0e5", underline = true }
+
+[tabs]
+active   = { fg = "#433a55", bg = "#ffc0e5", bold = true }
+inactive = { fg = "#ffc0e5", bg = "#4f4562" }
+
+[mode]
+normal_main = { fg = "#433a55", bg = "#ffc0e5", bold = true }
+normal_alt  = { fg = "#ffc0e5", bg = "#4f4562" }
+select_main = { fg = "#433a55", bg = "#e3ccff", bold = true }
+select_alt  = { fg = "#e3ccff", bg = "#4f4562" }
+unset_main  = { fg = "#433a55", bg = "#ffc0d2", bold = true }
+unset_alt   = { fg = "#ffc0d2", bg = "#4f4562" }
+
+[status]
+perm_sep   = { fg = "#7a6e90" }
+perm_type  = { fg = "#c8f7dc" }
+perm_read  = { fg = "#fff1b0" }
+perm_write = { fg = "#ffc0d2" }
+perm_exec  = { fg = "#b8e4ff" }
+progress_normal = { fg = "#ffc0e5", bg = "#4f4562" }
+progress_error  = { fg = "#ffc0d2", bg = "#4f4562" }
+
+[which]
+border = { fg = "#ffc0e5" }
+cand   = { fg = "#b8e4ff" }
+rest   = { fg = "#b3a7cb" }
+desc   = { fg = "#ffc0e5" }
+separator_style = { fg = "#7a6e90" }
+
+[confirm]
+border = { fg = "#ffc0e5" }
+title  = { fg = "#ffc0e5" }
+
+[spot]
+border   = { fg = "#ffc0e5" }
+title    = { fg = "#ffc0e5" }
+tbl_col  = { fg = "#b8e4ff" }
+tbl_cell = { fg = "#ffc0e5", reversed = true }
+
+[notify]
+title_info  = { fg = "#c8f7dc" }
+title_warn  = { fg = "#fff1b0" }
+title_error = { fg = "#ffc0d2" }
+
+[pick]
+border = { fg = "#ffc0e5" }
+active = { fg = "#ffc0e5", bold = true }
+
+[input]
+border = { fg = "#ffc0e5" }
+
+[cmp]
+border = { fg = "#ffc0e5" }
+
+[tasks]
+border  = { fg = "#ffc0e5" }
+hovered = { fg = "#ffc0e5", bold = true }
+
+[help]
+border = { fg = "#ffc0e5" }
+chord  = { fg = "#b8e4ff" }
+
+[filetype]
+rules = [
+	{ mime = "**/image/*", fg = "#fff1b0" },
+	{ mime = "**/{audio,video}/*", fg = "#e3ccff" },
+	{ mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#ffd2b8" },
+	{ mime = "**/application/{pdf,doc,rtf}", fg = "#c8f7dc" },
+	{ mime = "vfs/{absent,stale}", fg = "#7a6e90" },
+	{ url = "*", is = "orphan", bg = "#ffc0d2" },
+	{ url = "*", is = "exec", fg = "#dcf8bc" },
+	{ url = "*", is = "dummy", bg = "#ffc0d2" },
+	{ url = "*/", is = "dummy", bg = "#ffc0d2" },
+	{ url = "*/", fg = "#b8e4ff", bold = true },
+]
