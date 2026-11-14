@@ -156,8 +156,25 @@ defaults write -g AppleHighlightColor -string "1.000000 0.752941 0.898039 Other"
 defaults write -g AppleIconAppearanceTheme -string TintedLight
 defaults write -g AppleIconAppearanceTintColor -string Other
 defaults write -g AppleIconAppearanceCustomTintColor -string "0.779682 0.384318 0.887264 1.000000"
+# finder: columns, folders first, every file (dotfiles too) and where you are: the
+# path in the title and the bar under it, items and free space in the one below.
+# searching looks in the folder you're in. type / or ~ in a window to go to a path
+defaults write com.apple.finder FXPreferredViewStyle -string clmv
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+defaults write com.apple.finder ShowPathbar -bool true
+defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.finder FXDefaultSearchScope -string SCcf
+# no drive icons over the wallpaper (they're in the sidebar), and no .DS_Store
+# files left on network shares and USB drives
+for d in HardDrives ExternalHardDrives RemovableMedia MountedServers; do
+    defaults write com.apple.finder "Show${d}OnDesktop" -bool false
+done
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 killall Finder Dock 2>/dev/null || true
-ok "macOS in nekozame colours"
+ok "macOS in nekozame colours, and finder"
 
 step "fastfetch, with the bubble logo"
 mkdir -p "$SHARE/fastfetch"
