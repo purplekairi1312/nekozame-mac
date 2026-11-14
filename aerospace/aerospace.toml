@@ -79,21 +79,215 @@ ctrl-alt-cmd-shift-down = 'move-node-to-monitor down'
 [[on-window-detected]]
 if.app-id = 'io.tailscale.ipn.macsys'
 run = 'layout floating'
+check-further-callbacks = true
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = 'layout floating'
+check-further-callbacks = true
 [[on-window-detected]]
 if.app-id = 'org.hammerspoon.Hammerspoon'
 run = 'layout floating'
+check-further-callbacks = true
 [[on-window-detected]]
 if.app-id = 'app.zen-browser.zen'
 if.window-title-regex-substring = '^Extension:'
 run = 'layout floating'
+check-further-callbacks = true
 # file pickers, save/export/print dialogs and picture-in-picture videos, in any app:
 # tiled, they'd squeeze the window next to them to one side
 [[on-window-detected]]
 if.window-title-regex-substring = '^(Open|Save|Save As|Export|Export As|Print|Import|Choose .*|Open File|Select .*)$'
 run = 'layout floating'
+check-further-callbacks = true
 [[on-window-detected]]
 if.window-title-regex-substring = 'Picture-in-Picture'
 run = 'layout floating'
+check-further-callbacks = true
+
+# every app has its workspace, so its windows open there (and take you along)
+# and stay put. the bar shows the ones with windows. apps not here open where you are
+# 1: the web
+[[on-window-detected]]
+if.app-id = 'app.zen-browser.zen'
+run = 'move-node-to-workspace --focus-follows-window 1'
+[[on-window-detected]]
+if.app-id = 'net.imput.helium'
+run = 'move-node-to-workspace --focus-follows-window 1'
+[[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+run = 'move-node-to-workspace --focus-follows-window 1'
+[[on-window-detected]]
+if.app-id = 'org.torproject.torbrowser'
+run = 'move-node-to-workspace --focus-follows-window 1'
+[[on-window-detected]]
+if.app-id = 'net.waterfox.waterfox'
+run = 'move-node-to-workspace --focus-follows-window 1'
+[[on-window-detected]]
+if.app-id = 'fi.skyjake.lagrange'
+run = 'move-node-to-workspace --focus-follows-window 1'
+# 2: terminal and emacs
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace --focus-follows-window 2'
+[[on-window-detected]]
+if.app-id = 'org.gnu.Emacs'
+run = 'move-node-to-workspace --focus-follows-window 2'
+# 3: chat and mail
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = 'move-node-to-workspace --focus-follows-window 3'
+[[on-window-detected]]
+if.app-id = 'org.whispersystems.signal-desktop'
+run = 'move-node-to-workspace --focus-follows-window 3'
+[[on-window-detected]]
+if.app-id = 'com.tdesktop.Telegram'
+run = 'move-node-to-workspace --focus-follows-window 3'
+[[on-window-detected]]
+if.app-id = 'org.mozilla.thunderbird'
+run = 'move-node-to-workspace --focus-follows-window 3'
+# 4: making music
+[[on-window-detected]]
+if.app-id = 'com.bitwig.studio'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.cockos.reaper'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.apple.logic10'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.steinberg.cubase15'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'org.ardour.Ardour8'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'se.propellerheads.reason'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.renoise.renoise'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'org.musescore.MuseScore'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.stakira.openutau'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'org.audacityteam.audacity4'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.vcvrack.rack2'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.Titan.MilkyTracker'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'org.mixxx.mixxx'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'jp.co.roland.zenbeats'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.apple.garageband10'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.splice.Splice'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.splice.Instrument'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.haosc.sp404-sample-converter'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.native-instruments.nativeaccess2'
+run = 'move-node-to-workspace --focus-follows-window 4'
+[[on-window-detected]]
+if.app-id = 'com.uaudio.ua-connect'
+run = 'move-node-to-workspace --focus-follows-window 4'
+# 5: listening and watching
+[[on-window-detected]]
+if.app-id = 'Tauon'
+run = 'move-node-to-workspace --focus-follows-window 5'
+[[on-window-detected]]
+if.app-id = 'TauonMusicBox'
+run = 'move-node-to-workspace --focus-follows-window 5'
+[[on-window-detected]]
+if.app-id = 'org.cogx.cog'
+run = 'move-node-to-workspace --focus-follows-window 5'
+[[on-window-detected]]
+if.app-id = 'org.videolan.vlc'
+run = 'move-node-to-workspace --focus-follows-window 5'
+[[on-window-detected]]
+if.app-id = 'com.westbridge.stremio5-mac'
+run = 'move-node-to-workspace --focus-follows-window 5'
+[[on-window-detected]]
+if.app-id = 'jp.tmkk.XLD'
+run = 'move-node-to-workspace --focus-follows-window 5'
+# 6: drawing, photos and video
+[[on-window-detected]]
+if.app-id = 'org.krita'
+run = 'move-node-to-workspace --focus-follows-window 6'
+[[on-window-detected]]
+if.app-id = 'org.gimp.gimp'
+run = 'move-node-to-workspace --focus-follows-window 6'
+[[on-window-detected]]
+if.app-id = 'org.blenderfoundation.blender'
+run = 'move-node-to-workspace --focus-follows-window 6'
+[[on-window-detected]]
+if.app-id = 'org.darktable'
+run = 'move-node-to-workspace --focus-follows-window 6'
+[[on-window-detected]]
+if.app-id = 'org.kde.Kdenlive'
+run = 'move-node-to-workspace --focus-follows-window 6'
+[[on-window-detected]]
+if.app-id = 'com.obsproject.obs-studio'
+run = 'move-node-to-workspace --focus-follows-window 6'
+# 7: games
+[[on-window-detected]]
+if.app-id = 'com.valvesoftware.steam'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'com.heroicgameslauncher.hgl'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'org.prismlauncher.PrismLauncher'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'net.pcsx2.pcsx2'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'org.dolphin-emu.dolphin'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'com.libretro.dist.RetroArch'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'sh.ppy.osu.lazer'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'com.riotgames.RiotGames.RiotClient'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'com.riotgames.leagueoflegends'
+run = 'move-node-to-workspace --focus-follows-window 7'
+[[on-window-detected]]
+if.app-id = 'com.moonlight-stream.Moonlight'
+run = 'move-node-to-workspace --focus-follows-window 7'
+# 8: downloads
+[[on-window-detected]]
+if.app-id = 'org.qbittorrent.qBittorrent'
+run = 'move-node-to-workspace --focus-follows-window 8'
+[[on-window-detected]]
+if.app-id = 'org.amule.aMule'
+run = 'move-node-to-workspace --focus-follows-window 8'
+[[on-window-detected]]
+if.app-id = 'org.amule.aMuleGUI'
+run = 'move-node-to-workspace --focus-follows-window 8'
+[[on-window-detected]]
+if.app-id = 'org.nicotine_plus.Nicotine'
+run = 'move-node-to-workspace --focus-follows-window 8'
+[[on-window-detected]]
+if.app-id = 'ch.sudo.cyberduck'
+run = 'move-node-to-workspace --focus-follows-window 8'
