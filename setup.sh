@@ -286,6 +286,27 @@ if ! grep -q "nekozame/nekozame.zsh" "$HOME/.zshrc" 2>/dev/null; then
 fi
 ok "\$EDITOR, fastfetch and cava set up in zsh"
 
+step "Music: Tauon"
+# not in homebrew: the signed build from its own releases
+if [ -d /Applications/Tauon.app ] || [ -d /Applications/TauonMusicBox.app ]; then
+    ok "tauon"
+else
+    tmp=$(mktemp -d)
+    if fetch https://github.com/Taiko2k/Tauon/releases/latest/download/Tauon-signed.dmg "$tmp/tauon.dmg"; then
+        hdiutil attach -quiet -nobrowse -mountpoint "$tmp/mnt" "$tmp/tauon.dmg" \
+            && cp -R "$tmp/mnt/"*.app /Applications/ && ok "tauon"
+        hdiutil detach -quiet "$tmp/mnt" 2>/dev/null || true
+    fi
+    rm -rf "$tmp"
+fi
+# the nekozame theme in its list; it's picked for you while tauon's on its own default
+mkdir -p "$HOME/.local/share/TauonMusicBox/theme"
+fetch "$THEME/tauon/nekozame.ttheme" "$SHARE/theme/tauon.ttheme"
+place "$SHARE/theme/tauon.ttheme" "$HOME/.local/share/TauonMusicBox/theme/nekozame.ttheme"
+if grep -qs '^theme-name = "Mindaro"' "$HOME/.local/share/TauonMusicBox/tauon.conf"; then
+    sed -i '' 's/^theme-name = "Mindaro"/theme-name = "nekozame"/' "$HOME/.local/share/TauonMusicBox/tauon.conf"
+fi
+
 step "Tailscale and Moonlight"
 ok "installed (open Tailscale to log in)"
 

@@ -16,6 +16,7 @@ nekozame for macOS.
 - Zen, ready for privacy: Dark Reader, uBlock Origin, Privacy Badger, LibRedirect, ClearURLs, Consent-O-Matic and [nekojs](https://git.sr.ht/~purplekairi1312/nekojs), DuckDuckGo, HTTPS-only, no telemetry, no WebRTC leaks (Helium optional, with the same). Zen in nekozame too: see-through toolbars, and pages, GitHub and YouTube in nekozame colours
 - The nekozame theme in Discord (through Vencord) and Bitwig (through the Bitwig Theme Editor), when you have them. Run the setup again after they update
 - Doom Emacs as `$EDITOR`, always running as a daemon (evil mode or another editor if you want)
+- Tauon, the music player, in nekozame (your Navidrome or Jellyfin goes in its settings)
 - Tailscale and Moonlight
 - Music production on request: Bitwig, Reaper, LMMS and free plugins
 
