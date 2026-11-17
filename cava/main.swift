@@ -122,6 +122,20 @@ func bar(_ args: [String]) {
     p.arguments = args
     try? p.run()
 }
+// the same bars for tmux: set as its @nekozame_cava option, which nekozame-theme's tmux
+// theme shows on the status bar, and the bar redrawn, a few times a second while there's
+// sound (tmux has no server running: nothing happens)
+var lastTmux = Date.distantPast
+func tmux(_ bars: String) {
+    guard Date().timeIntervalSince(lastTmux) >= 0.2 || bars.isEmpty else { return }
+    lastTmux = Date()
+    let p = Process()
+    p.executableURL = URL(fileURLWithPath: "/bin/sh")
+    p.arguments = ["-c", "T=/opt/homebrew/bin/tmux; $T set -g @nekozame_cava \"$1\" 2>/dev/null || exit 0; "
+                   + "for c in $($T list-clients -F '#{client_name}'); do $T refresh-client -S -t \"$c\"; done", "sh", bars]
+    try? p.run()
+}
+
 var buffered = Data()
 fromCava.fileHandleForReading.readabilityHandler = { h in
     buffered.append(h.availableData)
@@ -131,12 +145,14 @@ fromCava.fileHandleForReading.readabilityHandler = { h in
         let levels = line.compactMap { $0 >= 48 && $0 <= 55 ? Int($0 - 48) : nil }
         if levels.allSatisfy({ $0 == 0 }) {
             quietFrames += 1
-            if quietFrames == 20 && shown { shown = false; bar(["--set", "cava", "drawing=off"]) }
+            if quietFrames == 20 && shown { shown = false; bar(["--set", "cava", "drawing=off"]); tmux("") }
             continue
         }
         quietFrames = 0
         shown = true
-        bar(["--set", "cava", "drawing=on", "label=" + String(levels.map { blocks[$0] })])
+        let bars = String(levels.map { blocks[$0] })
+        bar(["--set", "cava", "drawing=on", "label=" + bars])
+        tmux(bars)
     }
 }
 

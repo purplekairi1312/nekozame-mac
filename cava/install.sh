@@ -32,4 +32,8 @@ cat > "$AGENT" <<PLIST
 </dict></plist>
 PLIST
 launchctl bootout "gui/$(id -u)/com.nekozame.cava" 2>/dev/null || true
-launchctl bootstrap "gui/$(id -u)" "$AGENT"
+# the old one takes a moment to stop: started again once launchd lets it
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+    launchctl bootstrap "gui/$(id -u)" "$AGENT" 2>/dev/null && break
+    sleep 1
+done
