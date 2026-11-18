@@ -25,6 +25,14 @@ fastfetch() {
     fi
 }
 
+# over ssh, the other machine can't see it's Ghostty through tmux: say so (ssh sends LC_*
+# along), so nekozame os there draws its logo as the picture, not in text
+_nekozame_term=$TERM
+[[ -n $TMUX ]] && _nekozame_term=$(tmux display -p '#{client_termname}' 2>/dev/null)
+[[ $_nekozame_term == *ghostty* ]] && export LC_TERMINAL=ghostty
+[[ $_nekozame_term == *kitty* ]] && export LC_TERMINAL=kitty
+unset _nekozame_term
+
 # tab titles: the folder at the prompt, the command while it runs (without one,
 # ghostty shows its placeholder ghost)
 _nekozame_title_dir() { print -Pn "\e]2;%~\a" }
