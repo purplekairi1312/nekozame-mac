@@ -22,15 +22,15 @@ automatically-unhide-macos-hidden-apps = true
 [key-mapping]
 preset = 'qwerty'
 
-# the bar is 46px. the main screen's macOS menu bar (30px, under the bar) already
-# keeps windows clear of 30 of it; other screens have no menu bar
+# the bar is 46px. AeroSpace already keeps windows clear of the macOS menu bar's 30px
+# (under the bar) on every screen, the ones without one too: 26 more on each
 [gaps]
 inner.horizontal = 10
 inner.vertical = 10
 outer.left = 10
 outer.right = 10
 outer.bottom = 10
-outer.top = [{ monitor.main = 26 }, 56]
+outer.top = 26
 
 [mode.main.binding]
 # focus and move (Shift)
