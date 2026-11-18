@@ -19,6 +19,7 @@ nekozame for macOS.
 - Tauon, the music player, in nekozame (your Navidrome or Jellyfin goes in its settings)
 - Tailscale and Moonlight
 - Music production on request: Bitwig, Reaper, LMMS and free plugins
+- Emulation on request: your games on the Mac or a NAS, RetroArch, PCSX2, Dolphin and PPSSPP (pick any), and your saves synced with your other machines the way [nekozame os](https://git.sr.ht/~purplekairi1312/nekozame-os) does it. Only the emulators' folders are set; your own settings stay
 
 ## Install
 

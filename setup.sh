@@ -5,7 +5,7 @@
 #   wallpaper, the nekozame theme, Zen with the privacy extensions, Doom Emacs as
 #   $EDITOR, fastfetch, Tailscale and Moonlight, and the nekozame theme in
 #   Discord and Bitwig when they're installed
-#   asked: evil mode or another editor, music production, Helium
+#   asked: evil mode or another editor, music production, emulation, Helium
 # your own configs are kept: where you have one, nekozame's isn't put in its place.
 # (macOS's bash is 3.2: nothing newer in here)
 set -euo pipefail
@@ -380,6 +380,14 @@ for r in json.load(sys.stdin):
     fi
 else
     echo "  · no Bitwig here: if you get it, run this again for the nekozame theme in it"
+fi
+
+step "Emulation (optional)"
+# your library, on this Mac or a NAS, the emulators you pick, and your saves synced with your
+# other machines (emulation/setup.sh; once set up, it's updated every time)
+if [ -s "$HOME/.config/nekozame/emulation.json" ] ||
+    ask "Set up emulation? (your games on this Mac or a NAS, RetroArch, PCSX2, Dolphin, PPSSPP, saves synced)" false; then
+    bash "$HERE/emulation/setup.sh"
 fi
 
 step "Helium (a second browser, optional)"
