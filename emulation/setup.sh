@@ -61,6 +61,8 @@ if [ -n "$ROOT" ] && ! ask "They're in $ROOT. Change that?" false; then
     [[ "$ROOT" == /Volumes/* ]] && SHARED=1
 else
     LOCAL="On this Mac (~/Emulation)"; NAS="On a network share (a NAS)"; ELSE="In another folder"
+    echo "  this Mac: a folder here. a NAS: connected for you, and again at every login (the"
+    echo "  best for a NAS). another folder: a second drive, or a share you already connect to"
     case "$(gum choose --header "Where are your games?" --selected="$NAS" "$LOCAL" "$NAS" "$ELSE")" in
         "$LOCAL") ROOT="$HOME/Emulation" ;;
         "$NAS")
