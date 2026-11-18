@@ -131,7 +131,8 @@ func tmux(_ bars: String) {
     lastTmux = Date()
     let p = Process()
     p.executableURL = URL(fileURLWithPath: "/bin/sh")
-    p.arguments = ["-c", "T=/opt/homebrew/bin/tmux; $T set -g @nekozame_cava \"$1\" 2>/dev/null || exit 0; "
+    // -N: never start a tmux server (one from here would have this agent's environment)
+    p.arguments = ["-c", "T='/opt/homebrew/bin/tmux -N'; $T set -g @nekozame_cava \"$1\" 2>/dev/null || exit 0; "
                    + "for c in $($T list-clients -F '#{client_name}'); do $T refresh-client -S -t \"$c\"; done", "sh", bars]
     try? p.run()
 }
