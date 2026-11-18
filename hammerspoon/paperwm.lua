@@ -1,7 +1,7 @@
 -- nekozame-mac: PaperWM, scrolling tiling, with the same window keys as AeroSpace. waits for hammerspoon to read macOS 27's spaces properly
 -- (github.com/Hammerspoon/hammerspoon/issues/3897); until then AeroSpace does the
 -- windows. to use it: echo paperwm > ~/.config/nekozame/wm, quit aerospace, reload
-local WIN = { "ctrl", "alt" }
+local WIN = { "cmd" }  -- windows on Cmd, like nekozame os's Super
 local function bind(mods, key, fn) hs.hotkey.bind(mods, key, fn) end
 local function focused(fn) return function() local win = hs.window.focusedWindow(); if win then fn(win) end end end
 local function w(extra, key)
@@ -16,15 +16,15 @@ local binds = {
     swap_left = w({ "shift" }, "left"), swap_right = w({ "shift" }, "right"),
     swap_up = w({ "shift" }, "up"), swap_down = w({ "shift" }, "down"),
     focus_window_first = w(nil, "home"), focus_window_last = w(nil, "end"),
-    full_width = w(nil, "return"),
+    full_width = w(nil, "f"),
     cycle_width = w(nil, "r"),                   -- switch-preset-column-width
     cycle_height = w({ "shift" }, "r"),          -- switch-preset-window-height
     decrease_width = w(nil, "-"), increase_width = w(nil, "="),
-    center_window = w(nil, "c"),
+    center_window = w({ "alt" }, "c"),          -- + Option: Cmd+C stays copy
     slurp_in = w(nil, "["), barf_out = w(nil, "]"),  -- consume / expel window
-    toggle_stack = w(nil, "w"),                  -- tabbed column
-    toggle_floating = w(nil, "space"),
-    focus_floating = w({ "shift" }, "space"),
+    toggle_stack = w({ "alt" }, "w"),            -- tabbed column (Cmd+W stays close)
+    toggle_floating = w({ "alt" }, "space"),     -- (Cmd+Space stays the launcher)
+    focus_floating = w({ "alt", "shift" }, "space"),
     switch_space_r = w(nil, "pagedown"), switch_space_l = w(nil, "pageup"),
     move_window_r = w({ "shift" }, "pagedown"), move_window_l = w({ "shift" }, "pageup"),
 }
@@ -37,11 +37,11 @@ spoon.PaperWM:bindHotkeys(binds)
 spoon.PaperWM.window_gap = 10
 -- room for the bar (46px, over the macOS menu bar)
 spoon.PaperWM.external_bar = { top = 46 }
--- the mouse: Ctrl+Cmd+drag picks a window up and drops it in a new spot; Ctrl+Option+drag slides the whole row. Cmd+click stays the apps'
+-- the mouse: Ctrl+Cmd+drag picks a window up and drops it in a new spot; Cmd+Option+drag slides the whole row. Cmd+click stays the apps'
 spoon.PaperWM.lift_window = { "ctrl", "cmd" }
-spoon.PaperWM.drag_window = { "ctrl", "alt" }
-spoon.PaperWM.scroll_window = { "ctrl", "alt" }   -- Ctrl+Option+scroll slides the row
--- new windows take half the screen, side by side; Ctrl+Option+R cycles
+spoon.PaperWM.drag_window = { "cmd", "alt" }
+spoon.PaperWM.scroll_window = { "cmd", "alt" }   -- Cmd+Option+scroll slides the row
+-- new windows take half the screen, side by side; Cmd+R cycles
 -- a third, a half, two thirds
 spoon.PaperWM.default_width = 0.5
 spoon.PaperWM.window_ratios = { 1 / 3, 1 / 2, 2 / 3 }
@@ -51,12 +51,11 @@ for _, app in ipairs({ "Tailscale", "Hammerspoon", "System Settings", "Activity 
 filter:setAppFilter("Zen", { rejectTitles = { "^Extension:" } })
 spoon.PaperWM:start()
 
--- === windows (Ctrl+Option) ===
-bind(WIN, "q", focused(function(win) win:close() end))
-bind({ "ctrl", "alt", "shift" }, "return", focused(function(win) win:toggleFullScreen() end))
+-- === windows (Cmd) ===
+bind({ "cmd", "shift" }, "f", focused(function(win) win:toggleFullScreen() end))
 bind(WIN, "o", function() hs.spaces.toggleMissionControl() end)  -- overview
 
--- monitors: add Cmd (focus), and Shift (take the window)
+-- monitors: add Ctrl (focus), and Shift (take the window)
 local function focusScreen(dir)
     local s = hs.mouse.getCurrentScreen() or hs.screen.mainScreen()
     local target = ({ left = s.toWest, right = s.toEast, up = s.toNorth, down = s.toSouth })[dir](s)
@@ -66,8 +65,8 @@ local function focusScreen(dir)
     end
 end
 for _, dir in ipairs({ "left", "right", "up", "down" }) do
-    bind({ "ctrl", "alt", "cmd" }, dir, function() focusScreen(dir) end)
-    bind({ "ctrl", "alt", "cmd", "shift" }, dir, focused(function(win)
+    bind({ "cmd", "ctrl" }, dir, function() focusScreen(dir) end)
+    bind({ "cmd", "ctrl", "shift" }, dir, focused(function(win)
         ({ left = win.moveOneScreenWest, right = win.moveOneScreenEast,
            up = win.moveOneScreenNorth, down = win.moveOneScreenSouth })[dir](win)
     end))
