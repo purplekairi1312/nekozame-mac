@@ -29,6 +29,16 @@ for t in felixkratz/formulae d12frosted/emacs-plus nikitabobko/tap; do
     brew tap -q "$t"
     brew trust "$t" 2>/dev/null || true  # (older homebrew has no trust: nothing to do)
 done
+# a login agent (re)started: stopped first if it runs, then started, again while macOS is
+# still letting go of the old one (it says "Input/output error" until then)
+start_agent() {  # start_agent LABEL PLIST
+    launchctl bootout "gui/$(id -u)/$1" 2>/dev/null || true
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+        launchctl bootstrap "gui/$(id -u)" "$2" 2>/dev/null && return 0
+        sleep 1
+    done
+    echo "  · couldn't start $1: log out and back in, and it starts" >&2
+}
 # a new emacs while its daemon runs: macOS kills the daemon's restart over the old
 # build's signature, and emacs won't open. so the daemon stops for the update
 EMACS_AGENT="$HOME/Library/LaunchAgents/com.nekozame.emacs.plist"
@@ -39,7 +49,7 @@ if launchctl list com.nekozame.emacs >/dev/null 2>&1 &&
     emacs_paused=1
 fi
 brew bundle --file="$HERE/Brewfile"
-[ -z "$emacs_paused" ] || launchctl bootstrap "gui/$(id -u)" "$EMACS_AGENT"
+[ -z "$emacs_paused" ] || start_agent com.nekozame.emacs "$EMACS_AGENT"
 
 pink() { gum style --foreground "#ffc0e5" --bold "$*"; }
 step() { echo; pink "▸ $*"; }
@@ -129,8 +139,7 @@ cat > "$AGENT" <<PLIST
   <key>KeepAlive</key><true/>
 </dict></plist>
 PLIST
-launchctl bootout "gui/$(id -u)/com.nekozame.wallpaper" 2>/dev/null || true
-launchctl bootstrap "gui/$(id -u)" "$AGENT" && ok "$VARIANT, $best (a ${W%.*}x${H%.*} screen)"
+start_agent com.nekozame.wallpaper "$AGENT" && ok "$VARIANT, $best (a ${W%.*}x${H%.*} screen)"
 
 step "The nekozame theme"
 mkdir -p "$SHARE/theme"
@@ -283,7 +292,7 @@ if [ ! -s "$HOME/.config/nekozame/editor" ] && ! launchctl list | grep -q -E 'em
   <key>KeepAlive</key><true/>
 </dict></plist>
 PLIST
-    launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.nekozame.emacs.plist"
+    start_agent com.nekozame.emacs "$HOME/Library/LaunchAgents/com.nekozame.emacs.plist"
 fi
 cp "$HERE/shell/nekozame.zsh" "$HOME/.config/nekozame/nekozame.zsh"
 if ! grep -q "nekozame/nekozame.zsh" "$HOME/.zshrc" 2>/dev/null; then
@@ -380,8 +389,7 @@ PY
   <key>RunAtLoad</key><true/>
 </dict></plist>
 PLIST
-    launchctl bootout "gui/$(id -u)/com.nekozame.vencord" 2>/dev/null || true
-    for _ in 1 2 3 4 5; do launchctl bootstrap "gui/$(id -u)" "$AGENT" 2>/dev/null && break; sleep 1; done
+    start_agent com.nekozame.vencord "$AGENT"
     ok "vencord in discord, with the nekozame theme on, and back by itself after discord updates"
 else
     echo "  · no Discord here: install it, then run this again for the nekozame theme in it"
