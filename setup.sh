@@ -17,6 +17,11 @@ THEME=https://raw.githubusercontent.com/purplekairi1312/nekozame-theme/main/them
 PAPERWM=630411e7f1401fa124cc5fe7cad3ee562e328624
 mkdir -p "$SHARE" "$HOME/.local/bin" "$HOME/.config"
 
+# homebrew where it installs itself, even from a shell that didn't read your profile (ssh host cmd)
+for b in /opt/homebrew/bin /usr/local/bin; do
+    [ -x "$b/brew" ] && case ":$PATH:" in *":$b:"*) ;; *) PATH="$b:$PATH" ;; esac
+done
+export PATH
 command -v brew >/dev/null || { echo "install homebrew first: https://brew.sh" >&2; exit 1; }
 echo "installing what nekozame-mac uses (brew bundle)..."
 # newer homebrew only installs from taps you trust: sketchybar's, emacs-plus's, aerospace's
