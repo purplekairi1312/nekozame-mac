@@ -324,6 +324,19 @@ fi
 
 # the nekozame theme in apps that need a little patching for it. both are redone
 # here after an app update replaces the patch
+step "Heroic in nekozame"
+HEROIC="$HOME/Library/Application Support/heroic"
+if [ ! -d /Applications/Heroic.app ]; then
+    echo "  · no Heroic here: if you get it, run this again for the nekozame theme in it"
+elif [ ! -f "$HEROIC/config.json" ]; then
+    echo "  · open Heroic once (it makes its settings), then run this again"
+elif pgrep -x Heroic >/dev/null; then
+    echo "  · Heroic is open: close it and run this again"
+else
+    fetch "$THEME/heroic/nekozame.css" "$SHARE/theme/heroic.css" &&
+        python3 "$HERE/heroic/apply.py" "$HEROIC" "$SHARE/theme/heroic.css"
+fi
+
 step "Discord in nekozame (with Vencord)"
 if [ -d /Applications/Discord.app ]; then
     VC="$HOME/Library/Application Support/Vencord"

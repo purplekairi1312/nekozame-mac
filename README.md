@@ -14,7 +14,7 @@ nekozame for macOS.
 - macOS in nekozame colours, as far as it lets you: dark, pink accents, pink text selection and purple-tinted icons. Folder colours are yours to pick: right-click a folder in Finder
 - Finder made handier: columns, folders first, hidden files shown, the full path in the title and a path bar (type / or ~ in a window to go anywhere), search in the folder you're in, no drive icons over the wallpaper and no .DS_Store files on shares and USB drives
 - Zen, ready for privacy: Dark Reader, uBlock Origin, Privacy Badger, LibRedirect, ClearURLs, Consent-O-Matic and [nekojs](https://git.sr.ht/~purplekairi1312/nekojs), DuckDuckGo, HTTPS-only, no telemetry, no WebRTC leaks (Helium optional, with the same). Zen in nekozame too: see-through toolbars, and pages, GitHub and YouTube in nekozame colours
-- The nekozame theme in Discord (through Vencord) and Bitwig (through the Bitwig Theme Editor), when you have them. Run the setup again after they update
+- The nekozame theme in Discord (through Vencord), Bitwig (through the Bitwig Theme Editor) and Heroic, when you have them. Run the setup again after they update
 - Doom Emacs as `$EDITOR`, always running as a daemon (evil mode or another editor if you want)
 - Tauon, the music player, in nekozame (your Navidrome or Jellyfin goes in its settings)
 - Tailscale and Moonlight
