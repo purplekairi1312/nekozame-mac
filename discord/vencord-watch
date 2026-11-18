@@ -1,0 +1,25 @@
+#!/bin/bash
+# Vencord back into Discord after Discord updates itself (an update replaces the files Vencord
+# hooks into, and Discord comes back black, without its theme). setup.sh runs this from a
+# login agent: when Discord's files change, and every 15 minutes. Only where Vencord was set
+# up before. If Discord only just started (it restarts itself after updating), it's restarted
+# once more so the theme is back straight away; otherwise it takes from Discord's next start.
+APP=/Applications/Discord.app
+RES="$APP/Contents/Resources"
+[ -d "$APP" ] && [ -d "$HOME/Library/Application Support/Vencord" ] || exit 0
+[ -f "$RES/_app.asar" ] && exit 0  # still in
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+curl -fsSL -o "$tmp/vencord" https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-darwin || exit 1
+chmod +x "$tmp/vencord"
+"$tmp/vencord" -install -location "$APP" </dev/null >/dev/null || exit 1
+pid=$(pgrep -x Discord | head -1)
+if [ -n "$pid" ]; then
+    # how long it's been running, in seconds (macOS's ps only gives [[dd-]hh:]mm:ss)
+    up=$(ps -o etime= -p "$pid" 2>/dev/null | tr -d ' ' | awk -F'[-:]' '{s=0; for (i=1; i<=NF; i++) s=s*60+$i; if (NF==4) s=$1*86400+$2*3600+$3*60+$4; print s}')
+    if [ -n "$up" ] && [ "$up" -lt 300 ]; then
+        osascript -e 'quit app "Discord"'
+        for _ in $(seq 20); do pgrep -x Discord >/dev/null || break; sleep 1; done
+        open -a Discord
+    fi
+fi

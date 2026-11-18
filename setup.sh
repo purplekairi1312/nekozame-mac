@@ -362,7 +362,22 @@ if "nekozame.theme.css" not in t:
     t.append("nekozame.theme.css")
 json.dump(s, open(p, "w"), indent=4)
 PY
-    ok "vencord in discord, with the nekozame theme on (again after discord updates: run this)"
+    # after discord updates itself, vencord goes back in by itself (discord/vencord-watch)
+    AGENT="$HOME/Library/LaunchAgents/com.nekozame.vencord.plist"
+    cat > "$AGENT" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.nekozame.vencord</string>
+  <key>ProgramArguments</key><array><string>$HERE/discord/vencord-watch</string></array>
+  <key>WatchPaths</key><array><string>/Applications/Discord.app/Contents/Resources</string></array>
+  <key>StartInterval</key><integer>900</integer>
+  <key>RunAtLoad</key><true/>
+</dict></plist>
+PLIST
+    launchctl bootout "gui/$(id -u)/com.nekozame.vencord" 2>/dev/null || true
+    for _ in 1 2 3 4 5; do launchctl bootstrap "gui/$(id -u)" "$AGENT" 2>/dev/null && break; sleep 1; done
+    ok "vencord in discord, with the nekozame theme on, and back by itself after discord updates"
 else
     echo "  · no Discord here: install it, then run this again for the nekozame theme in it"
 fi
