@@ -21,7 +21,7 @@ picture() {  # picture FILE: in the terminal where it draws pictures, or where i
 }
 cask_of() {  # the Homebrew cask for a font
     case "$1" in
-        opendyslexic) echo font-opendyslexic-nerd-font ;; jetbrains) echo font-jetbrains-mono-nerd-font ;;
+        opendyslexic|opendyslexicalt) echo font-opendyslexic-nerd-font ;; jetbrains) echo font-jetbrains-mono-nerd-font ;;
         firacode) echo font-fira-code-nerd-font ;; hack) echo font-hack-nerd-font ;;
     esac
 }
@@ -41,10 +41,10 @@ now_ui=system now_code=jetbrains
 
 echo; pink "▸ The bar's font (macOS's own can't be changed)"
 picture "$PICTURES/interface.png"
-SYS="System's own (recommended)"; OD="OpenDyslexic"
-[ "$now_ui" = opendyslexic ] && sel="$OD" || sel="$SYS"
-pick=$(gum choose --header "Which font for the bar?" --selected="$sel" "$SYS" "$OD") || exit 0
-ui=system; [ "$pick" = "$OD" ] && ui=opendyslexic
+SYS="System's own (recommended)"; OD="OpenDyslexic"; ODA="OpenDyslexic Alt"
+case "$now_ui" in opendyslexic) sel="$OD" ;; opendyslexicalt) sel="$ODA" ;; *) sel="$SYS" ;; esac
+pick=$(gum choose --header "Which font for the bar?" --selected="$sel" "$SYS" "$OD" "$ODA") || exit 0
+case "$pick" in "$OD") ui=opendyslexic ;; "$ODA") ui=opendyslexicalt ;; *) ui=system ;; esac
 
 echo; pink "▸ The code font: Ghostty"
 picture "$PICTURES/code.png"
@@ -71,4 +71,4 @@ else
 fi
 mkdir -p "$(dirname "$STATE")" && printf 'interface=%s\ncode=%s\n' "$ui" "$code" > "$STATE"
 sketchybar --reload >/dev/null 2>&1 || true
-ok "the bar: $( [ "$ui" = system ] && echo "Hack, as before" || echo "OpenDyslexic" ); Ghostty: $family (open windows: once reopened)"
+ok "the bar: $(case "$ui" in system) echo "Hack, as before" ;; opendyslexicalt) echo "OpenDyslexic Alt" ;; *) echo "OpenDyslexic" ;; esac); Ghostty: $family (open windows: once reopened)"
