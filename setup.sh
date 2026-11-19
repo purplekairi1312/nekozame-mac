@@ -216,7 +216,7 @@ prefs["EnterprisePoliciesEnabled"] = True
 plistlib.dump(prefs, open(p + ".plist", "wb"))
 PY
 defaults import app.zen-browser.zen "$pol.plist" && rm -f "$pol" "$pol.old" "$pol.plist"
-ok "dark reader, ublock origin, privacy badger, libredirect, clearurls, consent-o-matic, duckduckgo, https-only"
+ok "dark reader, ublock origin, privacy badger, libredirect, consent-o-matic, duckduckgo, https-only"
 # the nekozame look: see-through toolbars, and pages in nekozame (with dark
 # reader; github and youtube in their own colours). zen makes its profile on
 # its first start: run this again after that if there's none yet
