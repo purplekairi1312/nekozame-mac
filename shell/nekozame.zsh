@@ -40,15 +40,3 @@ _nekozame_title_cmd() { print -n "\e]2;${1:0:40}\a" }
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _nekozame_title_dir
 add-zsh-hook preexec _nekozame_title_cmd
-
-# ssh from a tmux tab: the other machine's tmux bar only, not two (tmux.conf hides this one
-# again when you come back to the tab)
-if [[ -n $TMUX ]]; then
-    ssh() {
-        tmux set status off
-        command ssh "$@"
-        local rc=$?
-        tmux set status on
-        return $rc
-    }
-fi
