@@ -97,7 +97,7 @@ for c in "retroarch-metal:RetroArch" "pcsx2:PCSX2" "dolphin:Dolphin" "ppsspp-emu
 done
 [ -z "$have" ] || ok "here already:$have"
 if [ -n "$want" ]; then
-    printf '%s' "$want" | gum choose --no-limit --header "Install (space to pick, enter when done; none is fine):" |
+    printf '%s' "$want" | gum choose --no-limit --header "Install (tab to pick, enter when done; none is fine):" |
         while read -r e; do
             [ -n "$e" ] || continue
             cask="${e##*(}"; brew install --cask "${cask%)}" || true

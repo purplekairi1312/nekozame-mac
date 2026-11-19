@@ -326,7 +326,7 @@ ok "installed (open Tailscale to log in)"
 
 step "Music production"
 if ask "Set up music production? (DAWs and free plugins)" false; then
-    gum choose --no-limit --header "Pick (space), then enter:" \
+    gum choose --no-limit --header "Pick (tab), then enter:" \
         "bitwig-studio (proprietary · paid)" "reaper (proprietary · paid · free evaluation)" \
         "lmms (free software)" "surge-xt (free software synth)" "dexed (free software FM synth)" \
         "cardinal (free software modular)" "vcv-rack (free software modular)" \
