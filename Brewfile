@@ -20,4 +20,5 @@ cask "zen"
 cask "d12frosted/emacs-plus/emacs-plus-app"
 cask "tailscale-app"
 cask "moonlight"
-cask "font-hack-nerd-font"
+cask "font-hack-nerd-font"          # the bar's icons; the rest come with the fonts step
+cask "font-jetbrains-mono-nerd-font"  # Ghostty's default

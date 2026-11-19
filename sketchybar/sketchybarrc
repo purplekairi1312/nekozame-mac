@@ -15,7 +15,11 @@ DIM=0xffb3a7cb      # Wisteria-Wise
 sketchybar --bar position=top height=46 color=$DEEP corner_radius=0 margin=0 y_offset=0 \
                  border_width=0 shadow=off sticky=on topmost=on padding_left=14 padding_right=14
 
-sketchybar --default icon.font="Hack Nerd Font:Bold:15.0" label.font="Hack Nerd Font:Bold:13.0" \
+# the labels in the font picked in the setup (fonts/setup.sh): Hack, or OpenDyslexic; the
+# icons stay Hack, a Nerd Font they need
+LABEL_FONT="Hack Nerd Font"
+grep -qs '^interface=opendyslexic$' "$HOME/.config/nekozame/fonts" && LABEL_FONT="OpenDyslexic Nerd Font"
+sketchybar --default icon.font="Hack Nerd Font:Bold:15.0" label.font="$LABEL_FONT:Bold:13.0" \
                      icon.color=$TEXT label.color=$TEXT padding_left=4 padding_right=4 \
                      icon.padding_left=6 icon.padding_right=4 label.padding_left=4 label.padding_right=8 \
                      background.color=$PANEL background.corner_radius=8 background.height=24
@@ -82,7 +86,7 @@ sketchybar --add item network right \
 # cava's bars, next to what's playing (nekozame-cava fills them in; hidden in silence)
 sketchybar --add item cava right \
            --set cava drawing=off icon.drawing=off background.drawing=off \
-                 label.font="Hack Nerd Font:Bold:12.0" label.color=$PINK label.padding_left=2
+                 label.font="Hack Nerd Font:Bold:12.0" label.color=$PINK label.padding_left=2  # cava's bars: Hack's blocks
 
 # the macOS menu bar's icons: mirrored in when SketchyBar can (not on macOS 27 yet),
 # and a button that shows the real menu bar for a moment

@@ -155,7 +155,7 @@ fetch "$THEME/darkreader/nekozame.json" "$SHARE/theme/web/nekozame-darkreader.js
 fetch "$THEME/improvedtube/nekozame.json" "$SHARE/theme/web/nekozame-improvedtube.json"
 place "$SHARE/theme/ghostty" "$HOME/.config/ghostty/themes/nekozame"
 # cmd+t: a new window instead of a tab (windows tile; macOS's native tabs don't)
-[ -e "$HOME/.config/ghostty/config" ] || printf 'theme = nekozame\nfont-family = Hack Nerd Font\nkeybind = cmd+t=new_window\n' > "$HOME/.config/ghostty/config"
+[ -e "$HOME/.config/ghostty/config" ] || printf 'theme = nekozame\nfont-family = "JetBrainsMono Nerd Font Mono"\nkeybind = cmd+t=new_window\n' > "$HOME/.config/ghostty/config"
 place "$SHARE/theme/cava" "$HOME/.config/cava/config"
 place "$SHARE/theme/btop.theme" "$HOME/.config/btop/themes/nekozame.theme"
 # btop only writes its config on first quit: until then, it'd use its default colours
@@ -193,6 +193,13 @@ defaults -currentHost write com.apple.controlcenter MusicRecognition -int 18
 killall ControlCenter 2>/dev/null || true
 killall Finder Dock 2>/dev/null || true
 ok "macOS in nekozame colours, and finder"
+
+step "Fonts: the bar's and code's (all Nerd Fonts)"
+if [ -s "$HOME/.config/nekozame/fonts" ]; then
+    ok "set (change them: $HERE/fonts/setup.sh)"
+else
+    "$HERE/fonts/setup.sh" || true
+fi
 
 step "fastfetch, with the bubble logo"
 mkdir -p "$SHARE/fastfetch"
