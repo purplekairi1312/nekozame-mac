@@ -1,7 +1,7 @@
 # nekozame-mac: AeroSpace, i3-style tiling with its
 # own workspaces (it doesn't need macOS Spaces, which hammerspoon can't read on
 # macOS 27, so PaperWM waits: hammerspoon/paperwm.lua).
-#   Cmd           windows (Cmd+F fill the screen, Cmd+arrows focus), and apps:
+#   Cmd           windows (Cmd+Ctrl+F fill the screen, Cmd+arrows focus), and apps:
 #                 macOS's own Cmd+C/V/X/Z/S/W/Q, plus hammerspoon's Cmd+Return / E / B
 #   left Option+1-9  workspaces (hammerspoon/init.lua; right Option types)
 config-version = 2
@@ -33,7 +33,7 @@ outer.bottom = 10
 outer.top = 26
 
 [mode.main.binding]
-# windows on Cmd, like nekozame os's Super (Cmd+C/V/X/Z/S/W/Q/Space stay the apps')
+# windows on Cmd, like nekozame os's Super (Cmd+C/V/X/Z/S/W/F/Q/Space stay the apps')
 # focus and move (Shift)
 cmd-left = 'focus left'
 cmd-right = 'focus right'
@@ -43,9 +43,9 @@ cmd-shift-left = 'move left'
 cmd-shift-right = 'move right'
 cmd-shift-up = 'move up'
 cmd-shift-down = 'move down'
-# maximize / fullscreen
-cmd-f = 'fullscreen'
-cmd-shift-f = 'macos-native-fullscreen'
+# maximize / fullscreen: + Ctrl (Cmd+F stays the apps' Find; macOS's own fullscreen is Ctrl+Cmd+F)
+cmd-ctrl-f = 'fullscreen'
+cmd-ctrl-shift-f = 'macos-native-fullscreen'
 # sizes
 cmd-minus = 'resize smart -60'
 cmd-equal = 'resize smart +60'

@@ -16,7 +16,7 @@ local binds = {
     swap_left = w({ "shift" }, "left"), swap_right = w({ "shift" }, "right"),
     swap_up = w({ "shift" }, "up"), swap_down = w({ "shift" }, "down"),
     focus_window_first = w(nil, "home"), focus_window_last = w(nil, "end"),
-    full_width = w(nil, "f"),
+    full_width = w({ "ctrl" }, "f"),             -- (Cmd+F stays the apps' Find)
     cycle_width = w(nil, "r"),                   -- switch-preset-column-width
     cycle_height = w({ "shift" }, "r"),          -- switch-preset-window-height
     decrease_width = w(nil, "-"), increase_width = w(nil, "="),
@@ -52,7 +52,7 @@ filter:setAppFilter("Zen", { rejectTitles = { "^Extension:" } })
 spoon.PaperWM:start()
 
 -- === windows (Cmd) ===
-bind({ "cmd", "shift" }, "f", focused(function(win) win:toggleFullScreen() end))
+bind({ "cmd", "ctrl", "shift" }, "f", focused(function(win) win:toggleFullScreen() end))
 bind(WIN, "o", function() hs.spaces.toggleMissionControl() end)  -- overview
 
 -- monitors: add Ctrl (focus), and Shift (take the window)

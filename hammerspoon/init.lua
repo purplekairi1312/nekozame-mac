@@ -138,7 +138,7 @@ apps: Cmd
 
 windows: Cmd
   arrows              focus         + Shift     move
-  F                   fill the screen (+ Shift: macOS fullscreen)
+  Ctrl+F              fill the screen (+ Shift: macOS fullscreen)
   - / =               narrower / wider      R  even sizes
   Shift+R             tidy up: a clean row of even windows
   [ / ]               join the window left / right
