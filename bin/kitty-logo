@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """kitty-logo IMAGE COLUMNS: an image as text, for fastfetch's logo.
+kitty-logo --probe: whether the terminal shows kitty graphics (it's asked, and an
+answer comes back only from one that does; through tmux too, when tmux lets it).
 
 sends the image to the terminal (kitty graphics, through tmux when inside it)
 and prints the path of a file with the rows of placeholder characters that show
@@ -7,7 +9,7 @@ it, then COLUMNS and ROWS: fastfetch prints those as its logo. the picture is
 tied to the characters, so inside tmux it stays with its tab, scrolls with the
 text, and comes back when you switch back (ghostty and kitty draw it).
 """
-import base64, fcntl, os, struct, sys, termios, zlib
+import base64, fcntl, os, re, struct, sys, tempfile, termios, zlib
 
 # kitty's row/column diacritics (gen/rowcolumn-diacritics.txt), enough for 60 cells
 DIACRITICS = [0x0305,0x030D,0x030E,0x0310,0x0312,0x033D,0x033E,0x033F,0x0346,0x034A,0x034B,0x034C,0x0350,0x0351,0x0352,0x0357,0x035B,0x0363,0x0364,0x0365,0x0366,0x0367,0x0368,0x0369,0x036A,0x036B,0x036C,0x036D,0x036E,0x036F,0x0483,0x0484,0x0485,0x0486,0x0487,0x0592,0x0593,0x0594,0x0595,0x0597,0x0598,0x0599,0x059C,0x059D,0x059E,0x059F,0x05A0,0x05A1,0x05A8,0x05A9,0x05AB,0x05AC,0x05AF,0x05C4,0x0610,0x0611,0x0612,0x0613,0x0614,0x0615]
@@ -24,33 +26,103 @@ def cell_ratio():
             pass
     return 2.0
 
+_LAYERS = None
+def tmux_layers():
+    """how many tmux the picture goes through: this machine's ($TMUX), and the one on the
+    other end when someone came in over ssh from their own tmux (what this tmux says their
+    terminal is). without this machine's: the other end's, from $TERM"""
+    global _LAYERS
+    if _LAYERS is None:
+        import subprocess
+        def is_tmux(term):
+            return term.startswith(("tmux", "screen"))
+        if os.environ.get("TMUX"):
+            try:
+                client = subprocess.run(["tmux", "display", "-p", "#{client_termname}"], capture_output=True,
+                                        text=True, timeout=2).stdout.strip()
+            except (OSError, subprocess.SubprocessError):
+                client = ""
+            _LAYERS = 2 if is_tmux(client) else 1
+        else:
+            _LAYERS = 1 if is_tmux(os.environ.get("TERM", "")) else 0
+    return _LAYERS
+
+def through_tmux():
+    return tmux_layers() > 0
+
+def wrap(cmd):
+    """the escape sequence passed through each tmux on the way to the terminal"""
+    for _ in range(tmux_layers()):
+        cmd = f"\033Ptmux;{cmd.replace(chr(27), chr(27) * 2)}\033\\"
+    return cmd
+
+def probe(wait=0.3):
+    """ask the terminal for kitty graphics; True if it answers that it has them"""
+    import select, termios, time, tty
+    try:
+        fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY)
+    except OSError:
+        return False
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setcbreak(fd)
+        new = termios.tcgetattr(fd)
+        new[3] &= ~termios.ECHO
+        termios.tcsetattr(fd, termios.TCSANOW, new)
+        # a 1x1 picture, only queried. outside tmux, the terminal's answer to "what are
+        # you" (\033[c) comes after it, so a terminal without kitty graphics is quick to tell
+        os.write(fd, wrap("\033_Gi=31,s=1,v=1,a=q,t=d,f=24;AAAA\033\\").encode() + (b"" if through_tmux() else b"\033[c"))
+        got, end = b"", time.monotonic() + wait
+        while time.monotonic() < end:
+            r, _, _ = select.select([fd], [], [], max(0, end - time.monotonic()))
+            if not r:
+                break
+            got += os.read(fd, 1024)
+            if b"_Gi=31" in got and b"\033\\" in got.split(b"_Gi=31", 1)[1]:
+                return b";OK" in got.split(b"_Gi=31", 1)[1]
+            if not through_tmux() and re.search(rb"\033\[\?[\d;]*c", got):
+                return False
+        return False
+    finally:
+        termios.tcsetattr(fd, termios.TCSAFLUSH, old)
+        os.close(fd)
+
 def png_size(data):
     return struct.unpack(">II", data[16:24])
 
 def main():
+    if sys.argv[1:] == ["--probe"]:
+        sys.exit(0 if probe() else 1)
     image, cols = os.path.expanduser(sys.argv[1]), min(int(sys.argv[2]), len(DIACRITICS))
     data = open(image, "rb").read()
     w, h = png_size(data)
     rows = max(1, min(len(DIACRITICS), round(cols * h / w / cell_ratio())))
-    in_tmux = bool(os.environ.get("TMUX"))
     image_id = (zlib.crc32(data) & 0xFFFFFF) or 1
-    cache = os.path.expanduser("~/.cache/kitty-logo")
-    os.makedirs(cache, exist_ok=True)
+    cache = os.path.join(os.environ.get("XDG_CACHE_HOME") or os.path.expanduser("~/.cache"), "kitty-logo")
+    try:
+        os.makedirs(cache, exist_ok=True)
+    except OSError:  # no usable home (an image build): the temp folder will do
+        cache = os.path.join(tempfile.gettempdir(), f"kitty-logo-{os.getuid()}")
+        os.makedirs(cache, exist_ok=True)
     out = os.path.join(cache, f"{image_id:06x}-{cols}x{rows}.txt")
     # the image itself: straight to the terminal (it's far too big to be part of a
     # logo line), in 4k pieces
     def apc(body):  # one kitty graphics command, through tmux when inside it
-        cmd = f"\033_G{body}\033\\"
-        return f"\033Ptmux;{cmd.replace(chr(27), chr(27) * 2)}\033\\" if in_tmux else cmd
+        return wrap(f"\033_G{body}\033\\")
     payload = base64.b64encode(data).decode()
     chunks = [payload[i:i + 4096] for i in range(0, len(payload), 4096)]
-    with open("/dev/tty", "w") as tty:
-        for n, chunk in enumerate(chunks):
-            more = 1 if n < len(chunks) - 1 else 0
-            if n == 0:  # transmit, with a virtual placement shown by the characters
-                tty.write(apc(f"a=T,U=1,f=100,q=2,i={image_id},c={cols},r={rows},m={more};{chunk}"))
-            else:
-                tty.write(apc(f"m={more};{chunk}"))
+    try:
+        tty = open("/dev/tty", "w")
+    except OSError:  # no terminal (a build, a pipe): only the characters
+        tty = None
+    if tty:
+        with tty:
+            for n, chunk in enumerate(chunks):
+                more = 1 if n < len(chunks) - 1 else 0
+                if n == 0:  # transmit, with a virtual placement shown by the characters
+                    tty.write(apc(f"a=T,U=1,f=100,q=2,i={image_id},c={cols},r={rows},m={more};{chunk}"))
+                else:
+                    tty.write(apc(f"m={more};{chunk}"))
     # the characters that show it, coloured with the image's id
     if not os.path.exists(out):
         r, g, b = image_id >> 16, (image_id >> 8) & 255, image_id & 255
