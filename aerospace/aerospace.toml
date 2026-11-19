@@ -1,8 +1,8 @@
 # nekozame-mac: AeroSpace, i3-style tiling with its
 # own workspaces (it doesn't need macOS Spaces, which hammerspoon can't read on
 # macOS 27, so PaperWM waits: hammerspoon/paperwm.lua).
-#   Cmd           windows (Cmd+Ctrl+F fill the screen, Cmd+arrows focus), and apps:
-#                 macOS's own Cmd+C/V/X/Z/S/W/Q, plus hammerspoon's Cmd+Return / E / B
+#   Cmd+Ctrl      windows (Cmd+Ctrl+F fill the screen, Cmd+Ctrl+arrows focus)
+#   Cmd           apps: macOS's own, plus hammerspoon's Cmd+Return / E / B
 #   left Option+1-9  workspaces (hammerspoon/init.lua; right Option types)
 config-version = 2
 start-at-login = true
@@ -33,28 +33,29 @@ outer.bottom = 10
 outer.top = 26
 
 [mode.main.binding]
-# windows on Cmd, like nekozame os's Super (Cmd+C/V/X/Z/S/W/F/Q/Space stay the apps')
+# windows on Cmd+Ctrl: Cmd's own keys stay the apps' (Cmd+F find, Cmd+R reload, Cmd+-/= zoom,
+# Cmd+[ ] back and forward, Cmd+arrows in text)
 # focus and move (Shift)
-cmd-left = 'focus left'
-cmd-right = 'focus right'
-cmd-up = 'focus up'
-cmd-down = 'focus down'
-cmd-shift-left = 'move left'
-cmd-shift-right = 'move right'
-cmd-shift-up = 'move up'
-cmd-shift-down = 'move down'
+cmd-ctrl-left = 'focus left'
+cmd-ctrl-right = 'focus right'
+cmd-ctrl-up = 'focus up'
+cmd-ctrl-down = 'focus down'
+cmd-ctrl-shift-left = 'move left'
+cmd-ctrl-shift-right = 'move right'
+cmd-ctrl-shift-up = 'move up'
+cmd-ctrl-shift-down = 'move down'
 # maximize / fullscreen: + Ctrl (Cmd+F stays the apps' Find; macOS's own fullscreen is Ctrl+Cmd+F)
 cmd-ctrl-f = 'fullscreen'
 cmd-ctrl-shift-f = 'macos-native-fullscreen'
 # sizes
-cmd-minus = 'resize smart -60'
-cmd-equal = 'resize smart +60'
-cmd-r = 'balance-sizes'
+cmd-ctrl-minus = 'resize smart -60'
+cmd-ctrl-equal = 'resize smart +60'
+cmd-ctrl-r = 'balance-sizes'
 # if the layout gets messy: back to a clean row of even windows
-cmd-shift-r = ['flatten-workspace-tree', 'layout tiles horizontal', 'balance-sizes']
+cmd-ctrl-shift-r = ['flatten-workspace-tree', 'layout tiles horizontal', 'balance-sizes']
 # into a neighbour's column
-cmd-leftSquareBracket = 'join-with left'
-cmd-rightSquareBracket = 'join-with right'
+cmd-ctrl-leftSquareBracket = 'join-with left'
+cmd-ctrl-rightSquareBracket = 'join-with right'
 # stacked like tabs, or side by side; floating (on letters the apps keep: + Option)
 cmd-alt-w = 'layout accordion tiles'
 cmd-alt-space = 'layout floating tiling'
@@ -62,19 +63,19 @@ cmd-alt-c = 'layout horizontal vertical'
 # workspaces: left Option+1-9 (+ Shift takes the window) are in hammerspoon/init.lua,
 # which can tell the left Option from the right one (aerospace can't): the right one
 # stays free for typing, where Option+number makes characters (@ # | on a Spanish mac)
-cmd-pageDown = 'workspace next'
-cmd-pageUp = 'workspace prev'
-cmd-shift-pageDown = 'move-node-to-workspace next'
-cmd-shift-pageUp = 'move-node-to-workspace prev'
-# monitors: + Ctrl
-cmd-ctrl-left = 'focus-monitor left'
-cmd-ctrl-right = 'focus-monitor right'
-cmd-ctrl-up = 'focus-monitor up'
-cmd-ctrl-down = 'focus-monitor down'
-cmd-ctrl-shift-left = 'move-node-to-monitor left'
-cmd-ctrl-shift-right = 'move-node-to-monitor right'
-cmd-ctrl-shift-up = 'move-node-to-monitor up'
-cmd-ctrl-shift-down = 'move-node-to-monitor down'
+cmd-ctrl-pageDown = 'workspace next'
+cmd-ctrl-pageUp = 'workspace prev'
+cmd-ctrl-shift-pageDown = 'move-node-to-workspace next'
+cmd-ctrl-shift-pageUp = 'move-node-to-workspace prev'
+# monitors: + Option
+cmd-ctrl-alt-left = 'focus-monitor left'
+cmd-ctrl-alt-right = 'focus-monitor right'
+cmd-ctrl-alt-up = 'focus-monitor up'
+cmd-ctrl-alt-down = 'focus-monitor down'
+cmd-ctrl-alt-shift-left = 'move-node-to-monitor left'
+cmd-ctrl-alt-shift-right = 'move-node-to-monitor right'
+cmd-ctrl-alt-shift-up = 'move-node-to-monitor up'
+cmd-ctrl-alt-shift-down = 'move-node-to-monitor down'
 
 # not windows to tile: menu bar apps, settings, popups
 [[on-window-detected]]

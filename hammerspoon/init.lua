@@ -1,7 +1,7 @@
 -- nekozame-mac: the shortcuts that aren't the window manager's.
 --   Cmd          apps: macOS's own Cmd+C/V/X/Q..., plus
 --                Cmd+Return terminal, Cmd+E files, Cmd+Shift+E yazi, Cmd+B browser
---   Cmd          windows too: AeroSpace (aerospace.toml),
+--   Cmd+Ctrl     windows: AeroSpace (aerospace.toml),
 --                or PaperWM (paperwm.lua) once hammerspoon can read macOS 27's
 --                spaces: echo paperwm > ~/.config/nekozame/wm
 -- Cmd+Shift+/ shows them all.
@@ -136,16 +136,16 @@ apps: Cmd
   Cmd+E / Shift+E     files / yazi
   Ctrl+Cmd+Q          lock          Cmd+Shift+3/4/5  screenshot
 
-windows: Cmd
+windows: Cmd+Ctrl
   arrows              focus         + Shift     move
-  Ctrl+F              fill the screen (+ Shift: macOS fullscreen)
+  F                   fill the screen (+ Shift: macOS fullscreen)
   - / =               narrower / wider      R  even sizes
   Shift+R             tidy up: a clean row of even windows
   [ / ]               join the window left / right
   Option+W            stack like tabs       Option+Space  float
   Option+C            side by side / on top of each other
   Page Up / Down      prev / next workspace
-  + Ctrl + arrows     other monitor (+ Shift: take the window)
+  + Option + arrows   other monitor (+ Shift: take the window)
   Ctrl+Option+Delete  power menu
 
 workspaces: left Option+1-9, + Shift takes the window (right Option types)
