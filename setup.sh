@@ -185,6 +185,10 @@ defaults write com.apple.finder FXDefaultSearchScope -string SCcf
 for d in HardDrives ExternalHardDrives RemovableMedia MountedServers; do
     defaults write com.apple.finder "Show${d}OnDesktop" -bool false
 done
+# nothing on the desktop: its files stay in the Desktop folder (Finder's sidebar), and
+# clicking the wallpaper doesn't push the windows away
+defaults write com.apple.finder CreateDesktop -bool false
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # control center's music recognition in the menu bar (under the bar): its shazam
