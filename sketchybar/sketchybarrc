@@ -1,7 +1,7 @@
 #!/bin/bash
 # nekozame-mac: the bar. workspaces on the
 # left, the focused app (click it for its menus), what's playing, then volume, the
-# connection (ethernet or wi-fi), the battery (on macs that have one) and the clock. it covers the macOS menu bar, so that one never pops out.
+# bluetooth, the connection (ethernet or wi-fi), the battery (on macs that have one) and the clock. it covers the macOS menu bar, so that one never pops out.
 P="$CONFIG_DIR/plugins"
 BG=0xff5a4f6e       # Crowning
 PANEL=0xff4f4562    # Roman Purple
@@ -84,6 +84,13 @@ sketchybar --add item network right \
            --subscribe network wifi_change system_woke \
            --move network before volume
 
+# bluetooth: on, something connected (with how many), or off; click for its settings
+sketchybar --add item bluetooth right \
+           --set bluetooth update_freq=30 icon.color=$PINK label.color=$PINK label.drawing=off script="$P/bluetooth.sh" \
+                 click_script="open 'x-apple.systempreferences:com.apple.BluetoothSettings'" \
+           --subscribe bluetooth system_woke \
+           --move bluetooth before network
+
 # cava's bars, next to what's playing (nekozame-cava fills them in; hidden in silence)
 sketchybar --add item cava right \
            --set cava drawing=off icon.drawing=off background.drawing=off \
@@ -97,7 +104,7 @@ sketchybar --add item tray right \
                  click_script="$P/tray_toggle.sh"
 
 # the rounded bar: one pill behind everything
-sketchybar --add bracket pill '/space\..*/' front_app cava shazam media tray volume network $BATTERY clock \
+sketchybar --add bracket pill '/space\..*/' front_app cava shazam media tray volume bluetooth network $BATTERY clock \
            --set pill background.color=$BG background.corner_radius=12 background.height=34 \
                       background.border_width=2 background.border_color=$PANEL
 

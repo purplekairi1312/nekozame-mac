@@ -4,6 +4,7 @@ tap "d12frosted/emacs-plus"
 tap "nikitabobko/tap"
 
 brew "gum"             # setup's menus
+brew "blueutil"        # the bar's bluetooth
 brew "fastfetch"
 brew "cava"
 brew "yazi"
