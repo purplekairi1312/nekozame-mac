@@ -8,11 +8,28 @@ APP=/Applications/Discord.app
 RES="$APP/Contents/Resources"
 [ -d "$APP" ] && [ -d "$HOME/Library/Application Support/Vencord" ] || exit 0
 [ -f "$RES/_app.asar" ] && exit 0  # still in
+# what it did goes to a log, so a failure can be looked at
+LOG="$HOME/Library/Logs/nekozame-vencord.log"
+exec >>"$LOG" 2>&1
+echo "$(date '+%F %T') Discord $(defaults read "$APP/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null): Vencord missing, putting it back"
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
-curl -fsSL -o "$tmp/vencord" https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-darwin || exit 1
-chmod +x "$tmp/vencord"
-"$tmp/vencord" -install -location "$APP" </dev/null >/dev/null || exit 1
+# a few tries: right after waking or logging in the network may not be up yet
+done=""
+for try in 1 2 3 4 5; do
+    if curl -fsSL -o "$tmp/vencord" https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-darwin &&
+        chmod +x "$tmp/vencord" && "$tmp/vencord" -install -location "$APP" </dev/null; then
+        done=1
+        break
+    fi
+    echo "try $try failed"
+    sleep 30
+done
+if [ -z "$done" ]; then
+    osascript -e 'display notification "Run ~/.local/share/nekozame-mac/discord/vencord-watch in a terminal, or see ~/Library/Logs/nekozame-vencord.log" with title "Vencord couldn'"'"'t go back into Discord"'
+    exit 1
+fi
+echo "$(date '+%F %T') done"
 pid=$(pgrep -x Discord | head -1)
 if [ -n "$pid" ]; then
     # how long it's been running, in seconds (macOS's ps only gives [[dd-]hh:]mm:ss)
